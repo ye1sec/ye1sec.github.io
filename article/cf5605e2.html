@@ -1,0 +1,742 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="python的元编程"><meta name="keywords" content="python,元编程"><meta name="author" content="ye1s,undefined"><meta name="copyright" content="ye1s"><title>python的元编程【ye1s】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"LKL6Q0GQJM","apiKey":"03829f64e2f5c11e4a5e2b8e51e24eb9","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
+}</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#元编程简介"><span class="toc-number">1.</span> <span class="toc-text">元编程简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x1-运算符重载"><span class="toc-number">2.</span> <span class="toc-text">0x1.运算符重载</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x2特性与描述符"><span class="toc-number">3.</span> <span class="toc-text">0x2特性与描述符</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x3装饰器"><span class="toc-number">4.</span> <span class="toc-text">0x3装饰器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x4元类编程"><span class="toc-number">5.</span> <span class="toc-text">0x4元类编程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x5描述符"><span class="toc-number">6.</span> <span class="toc-text">0x5描述符</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x6import-hook"><span class="toc-number">7.</span> <span class="toc-text">0x6import hook</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x7动态编译"><span class="toc-number">8.</span> <span class="toc-text">0x7动态编译</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x8动态属性"><span class="toc-number">9.</span> <span class="toc-text">0x8动态属性</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x9猴子补丁"><span class="toc-number">10.</span> <span class="toc-text">0x9猴子补丁</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x10热更新"><span class="toc-number">11.</span> <span class="toc-text">0x10热更新</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color0"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color10"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color3"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">173</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">151</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">python的元编程</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2019-05-31 | 更新于 2020-04-13</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"><i class="fa fa-inbox article-icon" aria-hidden="true"></i><a class="link-a" href="/categories/%E7%BC%96%E7%A8%8B%E7%AE%97%E6%B3%95/">编程算法</a></div><div class="button-hover tags"><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/python/">python</a><span>&nbsp;|&nbsp;</span><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/%E5%85%83%E7%BC%96%E7%A8%8B/">元编程</a></div></div></div><div class="main-content"><p>简而言之，元编程就是关于创建操作源代码(比如修改、生成或包装原来的代码)的函数和类。<br> <a id="more"></a>  </p>
+<h1 id="元编程简介"><a href="#元编程简介" class="headerlink" title="元编程简介"></a>元编程简介</h1><p> 接下来让我来一步步介绍(误导)对 <code>python</code> 元编程细节的认识</p>
+<p>python类在实例化对象的时候，经历了三个阶段：</p>
+<ul>
+<li><p>第一个阶段是生成（每个类对象只会被生成一次）自己的类对象，靠元类的 <code>__new__()</code> 方法</p>
+</li>
+<li><p>第二个阶段是生成自己的类实例，靠的是类自己的<code>__new__</code>方法</p>
+</li>
+<li><p>第三个阶段是初始化类实例，靠的是类自己的 <code>__init__()</code> 方法。</p>
+</li>
+</ul>
+<p>当类对象被创建前，python2 会首先寻找 <code>__metaclass__</code> 属性是否存在，如果存在则调用<code>__metaclass__</code>属性指定的元类去初始化这个类对象。如果该类没定义 <code>__metaclass__</code>就去看他父类是否有定义，父类没有就去模块里找（全局变量<code>__metaclass__</code>），模块里再没有就把<code>__metaclass__ = type</code> 作为该类的元类。（python3是先看自己metaclass有没有定义，如果没有就看父类，父类没有就用type）</p>
+<p>再介绍下 <code>__new__</code>函数中参数的意思：cls 代表调用<code>__new__()</code>函数的 <code>class，handler_class_name</code> 代表对象的<code>__name__</code>值，也就是名称，<code>super_class_name</code> 代表对象的父类元组，property_dict 代表类的属性字典，和之前的 type 是一样的。  </p>
+<p>python的元编程主要实现方式有:</p>
+<ul>
+<li><p>加载时修改代码行为</p>
+<ul>
+<li>运算符重载</li>
+<li>装饰器</li>
+<li>元类编程</li>
+<li>描述符</li>
+<li>import hook</li>
+</ul>
+</li>
+<li><p>运行时改变代码行为</p>
+<ul>
+<li>动态编译</li>
+<li>动态属性</li>
+<li>猴子补丁和热更新</li>
+</ul>
+</li>
+</ul>
+<p>元类一般来说是用不上的，除非要大批量的修改类的属性。       </p>
+<h1 id="0x1-运算符重载"><a href="#0x1-运算符重载" class="headerlink" title="0x1.运算符重载"></a>0x1.运算符重载</h1><p>运算符重载在任何语言中都算得上是高级特性,因为它可以改变语言本身即元编程. Python支持有限的运算符重载,并有几个特殊的运算符可以改变类的一些特性.     </p>
+<p><strong>受限制的运算符重载</strong><br>在某些圈子中,运算符重载的名声并不好.这个语言特性可能(已经)被滥用,让程序员困惑,导致缺陷和意料之外的性能瓶颈.但是,如果使用得当,API会变得好用,代码会变得易于阅读.Python施加了一些限制,做好了灵活性、可用性和安全性方面的平衡：</p>
+<ul>
+<li>不能重载内置类型的运算符</li>
+<li>不能新建运算符,只能重载现有的</li>
+<li>某些运算符不能重载——is、and、or 和not（不过位运算符&amp;、| 和~ 可以）  </li>
+</ul>
+<p>下面是python所有可以重载的运算符以及对应的特殊方法:</p>
+<table>
+<thead>
+<tr>
+<th>一元运算符</th>
+<th>特殊方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>+</td>
+<td><strong>pos</strong></td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>neg</strong></td>
+</tr>
+<tr>
+<td>~</td>
+<td><strong>invert</strong></td>
+</tr>
+<tr>
+<td>abs(…)</td>
+<td><strong>abs</strong></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>二元运算符</th>
+<th>特殊方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>+</td>
+<td><strong>add</strong>,<strong>radd</strong></td>
+</tr>
+<tr>
+<td>+=</td>
+<td><strong>iaddr</strong></td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>sub</strong>,<strong>rsub</strong></td>
+</tr>
+<tr>
+<td>*</td>
+<td><strong>mul</strong>,<strong>rmul</strong></td>
+</tr>
+<tr>
+<td>/</td>
+<td><strong>div</strong>,<strong>rdiv</strong>,<strong>truediv</strong>,<strong>rtruediv</strong></td>
+</tr>
+<tr>
+<td>//</td>
+<td><strong>floordiv</strong>,<strong>rfloordiv</strong></td>
+</tr>
+<tr>
+<td>%</td>
+<td><strong>mod</strong>,<strong>rmod</strong></td>
+</tr>
+<tr>
+<td>**</td>
+<td><strong>pow</strong>,<strong>rpow</strong></td>
+</tr>
+<tr>
+<td>&lt;&lt;</td>
+<td><strong>lshift</strong>,<strong>rlshift</strong></td>
+</tr>
+<tr>
+<td>&gt;&gt;</td>
+<td><strong>rshift</strong>,<strong>rrshift</strong></td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td><strong>and</strong>,<strong>rand</strong></td>
+</tr>
+<tr>
+<td>^</td>
+<td><strong>xor</strong>,<strong>rxor</strong></td>
+</tr>
+<tr>
+<td>l</td>
+<td><strong>or</strong>,<em>_ror</em></td>
+</tr>
+<tr>
+<td>-=</td>
+<td><strong>isub</strong></td>
+</tr>
+<tr>
+<td>*=</td>
+<td><strong>imul</strong></td>
+</tr>
+<tr>
+<td>/=</td>
+<td><strong>idiv</strong>,<strong>itruediv</strong></td>
+</tr>
+<tr>
+<td>//=</td>
+<td><strong>ifloordiv</strong></td>
+</tr>
+<tr>
+<td>%=</td>
+<td><strong>imod</strong></td>
+</tr>
+<tr>
+<td>**=</td>
+<td><strong>ipow</strong></td>
+</tr>
+<tr>
+<td>&lt;&lt;=</td>
+<td><strong>ilshift</strong></td>
+</tr>
+<tr>
+<td>&gt;&gt;=</td>
+<td><strong>irshift</strong></td>
+</tr>
+<tr>
+<td>&amp;=</td>
+<td><strong>iand</strong></td>
+</tr>
+<tr>
+<td>^=</td>
+<td><strong>ixor</strong></td>
+</tr>
+<tr>
+<td>l=</td>
+<td><strong>ior</strong></td>
+</tr>
+<tr>
+<td>==</td>
+<td><strong>eq</strong></td>
+</tr>
+<tr>
+<td>!=,&lt;&gt;</td>
+<td><strong>ne</strong></td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td><strong>get</strong></td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td><strong>lt</strong></td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td><strong>ge</strong></td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td><strong>le</strong></td>
+</tr>
+<tr>
+<td>@</td>
+<td><strong>matmul</strong>(),<strong>rmatmul</strong>()</td>
+</tr>
+<tr>
+<td>@=</td>
+<td><strong>imatmul</strong>()</td>
+</tr>
+</tbody></table>
+<p>范例:<br>定义一个数组类,实现减法索引打印等操作</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">class Array:</span><br><span class="line">    def __init__(self,*args):<span class="comment">#构造函数</span></span><br><span class="line">        self.value = args</span><br><span class="line">    def __sub__(self,other):<span class="comment">#减法运算符</span></span><br><span class="line">        <span class="keyword">if</span> isinstance(other,(int ,<span class="built_in">float</span>)):</span><br><span class="line">            new = Array(*list(map(lambda x : x-other,self.value)))</span><br><span class="line">            <span class="built_in">return</span> new</span><br><span class="line">        <span class="keyword">if</span> isinstance(other,Array):</span><br><span class="line">            new = Array(*list(map(lambda x,y : x-y,self.value,other.value)))</span><br><span class="line">            <span class="built_in">return</span> new</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            raise ValueError(<span class="string">"Illegal operations"</span>)</span><br><span class="line">    def __repr__(self):<span class="comment">#打印</span></span><br><span class="line">        <span class="built_in">return</span> <span class="string">"Array: "</span>+str(self.value)</span><br><span class="line">    def __str__(self):<span class="comment">#字符串化</span></span><br><span class="line">        <span class="built_in">return</span> <span class="string">"Array: "</span>+str(self.value)</span><br><span class="line">    def __getitem__(self,index):<span class="comment">#索引分片,有了分片也就有了迭代,但不如迭代器好</span></span><br><span class="line">        new =  Array(*self.value[index])</span><br><span class="line">        <span class="built_in">return</span> new</span><br><span class="line"></span><br><span class="line">arr1=Array(1,2,3,4)</span><br><span class="line">arr2=Array(10,20,30,40)</span><br><span class="line"><span class="built_in">print</span>(arr2-arr1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">Array: (9, 18, 27, 36)</span><br></pre></td></tr></table></figure>
+<h1 id="0x2特性与描述符"><a href="#0x2特性与描述符" class="headerlink" title="0x2特性与描述符"></a>0x2特性与描述符</h1><p>除了属性之外,我们还可以创建特性(property),在不改变类接口的前提下,使用存取方法(即读值方法和设值方法)修改数据属性.这与统一访问原则相符–不管服务是由存储还是计算实现的,一个模块提供的所有服务都应该通过统一的方式使用.</p>
+<p>property是一个用于类中方法的装饰器,用于将方法属性转换为特性,如果要设定特性的增删改查能力,则可以使用<property>.setter,<property>.deleter定义.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Event(DbRecord): </span><br><span class="line">    @property</span><br><span class="line">    def venue(self):</span><br><span class="line">    <span class="string">''</span><span class="string">'The Event attribute'</span><span class="string">''</span></span><br><span class="line">        <span class="built_in">return</span> self.__venue</span><br><span class="line"></span><br><span class="line">    @venue.setter</span><br><span class="line">    def venue(self,value):</span><br><span class="line">        self.__venue = value</span><br><span class="line"></span><br><span class="line">    @venue.deleter</span><br><span class="line">    def venue(self,value):</span><br><span class="line">        del self.__venue</span><br></pre></td></tr></table></figure>
+<p>虽然内置的property经常用作装饰器,但它其实是一个类.在Python中,函数和类通常可以互换,因为二者都是可调用的对象,而且没有实例化对象的new运算符,所以调用构造方法与调用工厂函数没有区别.此外,只要能返回新的可调用对象,代替被装饰的函数,二者都可以用作装饰器.</p>
+<p>property构造方法的完整签名如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">property(fget=None, fset=None, fdel=None, doc=None)</span><br></pre></td></tr></table></figure>
+<p>所有参数都是可选的,如果没有把函数传给某个参数,那么得到的特性对象就不允许执行相应的操作.</p>
+<p>某些情况下,这种经典形式比装饰器句法好.但是在方法众多的类定义体中使用装饰器的话,一眼就能看出哪些是读值方法,哪些是设值方法,而不用按照惯例在方法名的前面加上get和set.类中的特性能影响实例属性的寻找方式,而一开始这种方式可能会让人觉得意外.</p>
+<p>特性都是类属性,但是特性管理的其实是实例属性的存取.如果实例和所属的类有同名数据属性,那么实例属性会覆盖(或称遮盖)类属性–至少通过那个实例读取属性时是这样.<br><strong>0x2.1实例属性遮盖类的数据属性</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class Class:</span><br><span class="line">    data = <span class="string">'the class data attr'</span></span><br><span class="line">    @property</span><br><span class="line">    def prop(self):</span><br><span class="line">        <span class="built_in">return</span> <span class="string">'the prop value'</span></span><br><span class="line">obj=Class()</span><br><span class="line"><span class="built_in">print</span>(vars(obj))</span><br><span class="line"><span class="built_in">print</span>(obj.data)</span><br><span class="line"></span><br><span class="line">obj.data=<span class="string">'bar'</span></span><br><span class="line"><span class="built_in">print</span>(vars(obj))</span><br><span class="line"><span class="built_in">print</span>(obj.data)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(Class.data)</span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">&#123;&#125;</span><br><span class="line">the class data attr</span><br><span class="line">&#123;<span class="string">'data'</span>: <span class="string">'bar'</span>&#125;</span><br><span class="line">bar</span><br><span class="line">the class data attr</span><br></pre></td></tr></table></figure>
+<p><strong>0x2.2实例属性不会遮盖类特性</strong>  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Class:</span><br><span class="line">    data = <span class="string">'the class data attr'</span></span><br><span class="line">    @property</span><br><span class="line">    def prop(self):</span><br><span class="line">        <span class="built_in">return</span> <span class="string">'the prop value'</span></span><br><span class="line">obj=Class()</span><br><span class="line"><span class="built_in">print</span>(Class.prop)</span><br><span class="line"><span class="built_in">print</span>(obj.prop)</span><br><span class="line">obj.__dict__[<span class="string">'prop'</span>] = <span class="string">'foo'</span></span><br><span class="line"><span class="built_in">print</span>(vars(obj))</span><br></pre></td></tr></table></figure>
+<p><strong>0x2.3新添的类特性遮盖现有的实例属性</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Class:</span><br><span class="line">    data = <span class="string">'the class data attr'</span></span><br><span class="line">    @property</span><br><span class="line">    def prop(self):</span><br><span class="line">        <span class="built_in">return</span> <span class="string">'the prop value'</span></span><br><span class="line">obj=Class()</span><br><span class="line">obj.data=<span class="string">'bar'</span></span><br><span class="line"><span class="built_in">print</span>(obj.data)</span><br><span class="line"><span class="built_in">print</span>(Class.data)</span><br><span class="line">Class.data = property(lambda self: <span class="string">'the "data" prop value'</span>)</span><br><span class="line"><span class="built_in">print</span>(obj.data)</span><br></pre></td></tr></table></figure>
+
+<p><strong>0x2.4特性的文档</strong><br>控制台中的help()函数或IDE等工具需要显示特性的文档时,会从特性的<strong>doc</strong>属性中提取信息.</p>
+<p>如果使用经典调用句法,为property对象设置文档字符串的方法是传入doc参数:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">weight = property(get_weight, set_weight, doc=<span class="string">'weight in kilograms'</span>)</span><br></pre></td></tr></table></figure>
+<p>使用装饰器创建property对象时,读值方法(有@property装饰器的方法)的文档字符串作为一个整体,变成特性的文档.<br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong><br><strong>0x2.</strong></p>
+<h1 id="0x3装饰器"><a href="#0x3装饰器" class="headerlink" title="0x3装饰器"></a>0x3装饰器</h1><p>函数装饰器用于在源码中”标记”函数,以某种方式增强函数的行为.严格来说装饰器这种形式是一种语法糖. </p>
+<p><strong>0x3.1装饰器的定义</strong><br>装饰器本质上是一个Python函数，它可以让其他函数在不需要做任何代码变动的前提下增加额外功能，装饰器的返回值也是一个函数对象。</p>
+<p><strong>0x3.2装饰器的特点:</strong></p>
+<ul>
+<li>装饰器是可调用的对象,其参数是另一个可调用对象.</li>
+<li>装饰器可能会处理被装饰的可调用对象,然后把它返回,或者将其替换成另一个可调用对象</li>
+<li>装饰器在加载模块时立即执行<br>装饰器的形式如下:<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@decorator</span><br><span class="line">def call(args):</span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>它等价于 <code>call(args) = decorator(call(args))</code> </p>
+<p>*<em>0x3.3装饰器的属性: *</em></p>
+<ul>
+<li>实质： 是一个函数</li>
+<li>参数：是你要装饰的函数名（并非函数调用）</li>
+<li>返回：是装饰完的函数名（也非函数调用）</li>
+<li>作用：为已经存在的对象添加额外的功能</li>
+<li>特点：不需要对对象做任何的代码上的变动</li>
+</ul>
+<p>*<em>0x3.4装饰器的作用: *</em></p>
+<blockquote>
+<p>它经常用于有切面需求的场景，比如：插入日志、性能测试、事务处理、缓存、权限校验等场景。装饰器是解决这类问题的绝佳设计，有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码并继续重用。  </p>
+</blockquote>
+<p>概括的讲，<strong>装饰器的作用就是为已经存在的函数或对象添加额外的功能。</strong><br><strong>0x3.5常见的装饰器</strong><br><strong>0x3.5.1函数装饰器</strong><br>编写自定义装饰器有许多方法，但最简单的方法是编写一个函数，返回包装原始函数调用的一个子函数<br>例子1：  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">def debug(func):</span><br><span class="line">    def wrapper(*agrs, **kwargs):</span><br><span class="line">        <span class="string">''</span><span class="string">'包装函数内部文档'</span><span class="string">''</span></span><br><span class="line">        <span class="built_in">print</span> (<span class="string">"[DEBUG]:enter %s()--%s"</span> %(func.__name__, *agrs))</span><br><span class="line">        <span class="built_in">return</span> func(*agrs, **kwargs)</span><br><span class="line">    <span class="built_in">return</span> wrapper</span><br><span class="line"></span><br><span class="line">@debug</span><br><span class="line">def say_hello(parm):</span><br><span class="line">    <span class="string">''</span><span class="string">' 提供函数文档字符串'</span><span class="string">''</span></span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"say_hello"</span>)</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    say_hello(<span class="string">"Python"</span>)</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"原始函数名：%s"</span> %(say_hello.__name__))</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"函数文档字符串：%s"</span> %(say_hello.__doc__))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">[DEBUG]:enter say_hello()--Python</span><br><span class="line">say_hello</span><br><span class="line">原始函数名：wrapper</span><br><span class="line">函数文档字符串：包装函数内部文档</span><br></pre></td></tr></table></figure>
+<p>例子2:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">from functools import wraps</span><br><span class="line"></span><br><span class="line">def debug(func):</span><br><span class="line">    @wraps(func)</span><br><span class="line">    def wrapper(*agrs, **kwargs):</span><br><span class="line">        <span class="string">''</span><span class="string">'包装函数内部文档'</span><span class="string">''</span></span><br><span class="line">        <span class="built_in">print</span> (<span class="string">"[DEBUG]:enter %s()--%s"</span> %(func.__name__, *agrs))</span><br><span class="line">        <span class="built_in">return</span> func(*agrs, **kwargs)</span><br><span class="line">    <span class="built_in">return</span> wrapper</span><br><span class="line"></span><br><span class="line">@debug</span><br><span class="line">def say_hello(parm):</span><br><span class="line">    <span class="string">''</span><span class="string">' 提供函数文档字符串'</span><span class="string">''</span></span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"say_hello"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    say_hello(<span class="string">"Python"</span>)</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"原始函数名：%s"</span> %(say_hello.__name__))</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"函数文档字符串：%s"</span> %(say_hello.__doc__))</span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">[DEBUG]:enter say_hello()--Python</span><br><span class="line">say_hello</span><br><span class="line">原始函数名：say_hello</span><br><span class="line">函数文档字符串： 提供函数文档字符串</span><br></pre></td></tr></table></figure>
+<p><strong>注意例1与例2的区别，也是使用装饰器的常用错误，在使用装饰器时不保存函数元数据（文档字符串和原始函数名）</strong>   </p>
+<p><strong>0x3.5.2 类作为装饰器</strong><br>装饰器不仅可以是函数，还可以是类，相比函数装饰器，类装饰器具有灵活度大、高内聚、封装性等优点。使用类装饰器主要依靠类的<strong>call</strong>方法，当使用 @ 形式将装饰器附加到函数上时，就会调用此方法。     </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">class debug:</span><br><span class="line">    def __init__(self, func):</span><br><span class="line">        self.func = func</span><br><span class="line"></span><br><span class="line">    def __call__(self, *argv, **kwargv):</span><br><span class="line">        <span class="string">''</span><span class="string">'包装函数内部文档'</span><span class="string">''</span></span><br><span class="line">        <span class="built_in">print</span> (<span class="string">"[DEBUG]:enter %s()--%s"</span> %(self.func.__name__, *argv))</span><br><span class="line">        self.func(*argv, **kwargv)</span><br><span class="line"></span><br><span class="line">def say_hello(something):</span><br><span class="line">    <span class="string">''</span><span class="string">' 提供函数文档字符串 '</span><span class="string">''</span></span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"say_hello"</span>, something)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    De = debug(say_hello)</span><br><span class="line">    De(<span class="string">"Python"</span>)</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"原始函数名：%s"</span> %(say_hello.__name__))</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"函数文档字符串：%s"</span> %(say_hello.__doc__))</span><br><span class="line"></span><br><span class="line">ouput:</span><br><span class="line">[DEBUG]:enter say_hello()--Python</span><br><span class="line">say_hello Python</span><br><span class="line">原始函数名：say_hello</span><br><span class="line">函数文档字符串： 提供函数文档字符串</span><br></pre></td></tr></table></figure>
+<p><strong>0x3.5.3参数化装饰器</strong><br>　　在实际代码中通常需要使用参数化的装饰器，比如次数、类型判断等，下面是一个简单的装饰器示例，给定重复次数，每次被调用时都会重复执行被装饰函数  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">from functools import wraps</span><br><span class="line"></span><br><span class="line"><span class="comment">#参数化装饰器</span></span><br><span class="line">def repeat(number=3):</span><br><span class="line">    def debug(func):</span><br><span class="line">        @wraps(func)</span><br><span class="line">        def wrapper(*argv, **kwargv):</span><br><span class="line">            <span class="string">''</span><span class="string">'包装函数内部文档'</span><span class="string">''</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(number):</span><br><span class="line">                <span class="built_in">print</span> (<span class="string">"[DUBEG]:enter %s()--%s"</span> %(func.__name__, *argv))</span><br><span class="line">                result = func(*argv, **kwargv)</span><br><span class="line">            <span class="built_in">return</span> result</span><br><span class="line">        <span class="built_in">return</span> wrapper</span><br><span class="line">    <span class="built_in">return</span> debug</span><br><span class="line"></span><br><span class="line">@repeat(2)</span><br><span class="line">def say_hello(*agrv, **kwargv):</span><br><span class="line">    <span class="string">''</span><span class="string">'提供函数文档字符串'</span><span class="string">''</span></span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"say_hello"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    say_hello(<span class="string">"Python"</span>)</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"原始函数名：%s"</span> %(say_hello.__name__))</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"函数文档字符串：%s"</span> %(say_hello.__doc__))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">[DUBEG]:enter say_hello()--Python</span><br><span class="line">say_hello</span><br><span class="line">[DUBEG]:enter say_hello()--Python</span><br><span class="line">say_hello</span><br><span class="line">原始函数名：say_hello</span><br><span class="line">函数文档字符串：提供函数文档字符串</span><br></pre></td></tr></table></figure>
+<p><strong>0x3.5.4装饰器装饰类</strong><br>　和装饰一个函数类似，也可以写一个函数来装饰类，用来向类中添加功能，基本原则一致，装饰器是一个函数或是一个可调用对象，它接受一个类作为参数，返回一个类作为返回值</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">def decoratortest(cls):</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">"&#123;0.__class__.__qualname__&#125;"</span>.format(cls))</span><br><span class="line">    <span class="built_in">return</span> cls</span><br><span class="line"></span><br><span class="line">@decoratortest</span><br><span class="line">class testclass:</span><br><span class="line">    def __init__(self, value):</span><br><span class="line">        self.value = value</span><br><span class="line"></span><br><span class="line">    def __repr__(self):</span><br><span class="line">        <span class="built_in">return</span> <span class="string">"&#123;0&#125;:88"</span>.format(self)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">	t = testclass(88)</span><br></pre></td></tr></table></figure>
+
+<p><strong>0x3.5.5内置的装饰器</strong><br>*<em>@property *</em><br>在了解这个装饰器前，你需要知道在不使用装饰器怎么写一个属性。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">def getx(self):</span><br><span class="line">    <span class="built_in">return</span> self._x</span><br><span class="line"></span><br><span class="line">def setx(self, value):</span><br><span class="line">    self._x = value</span><br><span class="line">    </span><br><span class="line">def delx(self):</span><br><span class="line">   del self._x</span><br><span class="line"></span><br><span class="line"><span class="comment"># create a property</span></span><br><span class="line">x = property(getx, setx, delx, <span class="string">"I am doc for x property"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>以上就是一个Python属性的标准写法，其实和Java挺像的，但是太罗嗦。有了@语法糖，能达到一样的效果但看起来更简单。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@property</span><br><span class="line">def x(self): ...</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等同于</span></span><br><span class="line"></span><br><span class="line">def x(self): ...</span><br><span class="line">x = property(x)</span><br></pre></td></tr></table></figure>
+<p>属性有三个装饰器：setter, getter, deleter ，都是在property()的基础上做了一些封装，因为setter和deleter是property()的第二和第三个参数，不能直接套用@语法。getter装饰器和不带getter的属性装饰器效果是一样的，估计只是为了凑数，本身没有任何存在的意义。经过@property装饰过的函数返回的不再是一个函数，而是一个property对象。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; property()</span><br><span class="line">&lt;property object at 0x10ff07940&gt;</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>@staticmethod，@classmethod</strong>  </p>
+<p>有了@property装饰器的了解，这两个装饰器的原理是差不多的。@staticmethod返回的是一个staticmethod类对象，而@classmethod返回的是一个classmethod类对象。他们都是调用的是各自的<strong>init</strong>()构造函数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class classmethod(object):</span><br><span class="line">    <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">    classmethod(function) -&gt; method</span></span><br><span class="line"><span class="string">    "</span><span class="string">""</span>    </span><br><span class="line">    def __init__(self, <span class="keyword">function</span>): <span class="comment"># for @classmethod decorator</span></span><br><span class="line">        pass</span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">class staticmethod(object):</span><br><span class="line">    <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">    staticmethod(function) -&gt; method</span></span><br><span class="line"><span class="string">    "</span><span class="string">""</span></span><br><span class="line">    def __init__(self, <span class="keyword">function</span>): <span class="comment"># for @staticmethod decorator</span></span><br><span class="line">        pass</span><br><span class="line">    <span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<p>装饰器的@语法就等同调用了这两个类的构造函数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Foo(object):</span><br><span class="line"></span><br><span class="line">    @staticmethod</span><br><span class="line">    def bar():</span><br><span class="line">        pass</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 等同于 bar = staticmethod(bar)</span></span><br></pre></td></tr></table></figure>
+<p>至此，我们上文提到的装饰器接口定义可以更加明确一些，装饰器必须接受一个callable对象，其实它并不关心你返回什么，可以是另外一个callable对象（大部分情况），也可以是其他类对象，比如property。  </p>
+<p><strong>0x3.6被装饰的函数有不定长参数</strong><br>范例:  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">import time</span><br><span class="line">def timefun(func):</span><br><span class="line">	def wrapped_func(*args, **kwargs):</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"%s called at %s"</span> % (func.__name__, time.ctime()))</span><br><span class="line">		func(*args, **kwargs)</span><br><span class="line">	<span class="built_in">return</span> wrapped_func</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@timefun</span><br><span class="line">def foo(a, b, c, d=<span class="string">"foo原代码"</span>):</span><br><span class="line">    time.sleep(0.8)</span><br><span class="line">    <span class="built_in">print</span>(a + b + c)</span><br><span class="line">    <span class="built_in">print</span>(d)</span><br><span class="line"></span><br><span class="line">foo(3, 5, 7)</span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">foo called at Fri May 31 16:18:22 2019</span><br><span class="line">15</span><br><span class="line">foo原代码</span><br></pre></td></tr></table></figure>
+<p>wrapper参数为<em>args, *</em>kwargs。 <em>args表示的参数以列表的形式传入；*</em>kwargs表示的参数以字典的形式传入：</p>
+<p>从图中我们可以看到：凡是以key=value形式的参数均存在kwargs中，剩下的所有参数都以列表的形式存于args中。这里要注意的是：为了不破坏原函数的逻辑，我们要保证内层函数wrapper_func和被装饰函数func的传入参数和返回值类型必须保持一致。</p>
+<p><strong>0x3.7装饰器顺序</strong><br>一个函数还可以同时定义多个装饰器，比如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@a</span><br><span class="line">@b</span><br><span class="line">@c</span><br><span class="line">def f ():</span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
+<p>它的执行顺序是从里到外，最先调用最里层的装饰器，最后调用最外层的装饰器，它等效于</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f = a(b(c(f)))</span><br></pre></td></tr></table></figure>
+
+<p><strong>0x3.8装饰器的错误使用</strong><br>装饰器可以让你代码更加优雅，减少重复，但也不全是优点，也会带来一些问题。</p>
+<p>*<em>0x3.8.1位置错误的代码 *</em><br>让我们直接看示例代码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Python</span><br><span class="line">def html_tags(tag_name):</span><br><span class="line">    <span class="built_in">print</span> <span class="string">'begin outer function.'</span></span><br><span class="line">    def wrapper_(func):</span><br><span class="line">        <span class="built_in">print</span> <span class="string">"begin of inner wrapper function."</span></span><br><span class="line">        def wrapper(*args, **kwargs):</span><br><span class="line">            content = func(*args, **kwargs)</span><br><span class="line">            <span class="built_in">print</span> <span class="string">"&lt;&#123;tag&#125;&gt;&#123;content&#125;&lt;/&#123;tag&#125;&gt;"</span>.format(tag=tag_name, content=content)</span><br><span class="line">        <span class="built_in">print</span> <span class="string">'end of inner wrapper function.'</span></span><br><span class="line">        <span class="built_in">return</span> wrapper</span><br><span class="line">    <span class="built_in">print</span> <span class="string">'end of outer function'</span></span><br><span class="line">    <span class="built_in">return</span> wrapper_</span><br><span class="line"></span><br><span class="line">@html_tags(<span class="string">'b'</span>)</span><br><span class="line">def hello(name=<span class="string">'Toby'</span>):</span><br><span class="line">    <span class="built_in">return</span> <span class="string">'Hello &#123;&#125;!'</span>.format(name)</span><br><span class="line"></span><br><span class="line">hello()</span><br><span class="line">hello()</span><br></pre></td></tr></table></figure>
+<p>在装饰器中我在各个可能的位置都加上了print语句，用于记录被调用的情况。你知道他们最后打印出来的顺序吗？如果你心里没底，那么最好不要在装饰器函数之外添加逻辑功能，否则这个装饰器就不受你控制了。以下是输出结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Python</span><br><span class="line">begin outer <span class="keyword">function</span>.</span><br><span class="line">end of outer <span class="keyword">function</span></span><br><span class="line">begin of inner wrapper <span class="keyword">function</span>.</span><br><span class="line">end of inner wrapper <span class="keyword">function</span>.</span><br><span class="line">&lt;b&gt;Hello Toby!&lt;/b&gt;</span><br><span class="line">&lt;b&gt;Hello Toby!&lt;/b&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>0x3.8.2错误的函数签名和文档</strong><br>装饰器装饰过的函数看上去名字没变，其实已经变了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">def logging(func):</span><br><span class="line">    def wrapper(*args, **kwargs):</span><br><span class="line">        <span class="string">""</span><span class="string">"print log before a function."</span><span class="string">""</span></span><br><span class="line">        <span class="built_in">print</span> <span class="string">"[DEBUG] &#123;&#125;: enter &#123;&#125;()"</span>.format(datetime.now(), func.__name__)</span><br><span class="line">        <span class="built_in">return</span> func(*args, **kwargs)</span><br><span class="line">    <span class="built_in">return</span> wrapper</span><br><span class="line"></span><br><span class="line">@logging</span><br><span class="line">def say(something):</span><br><span class="line">    <span class="string">""</span><span class="string">"say something"</span><span class="string">""</span></span><br><span class="line">    <span class="built_in">print</span> <span class="string">"say &#123;&#125;!"</span>.format(something)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> say.__name__  <span class="comment"># wrapper</span></span><br></pre></td></tr></table></figure>
+<p>为什么会这样呢？只要你想想装饰器的语法糖@代替的东西就明白了。@等同于这样的写法。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">say = logging(say)</span><br></pre></td></tr></table></figure>
+<p>logging其实返回的函数名字刚好是wrapper，那么上面的这个语句刚好就是把这个结果赋值给say，say的<strong>name</strong>自然也就是wrapper了，不仅仅是name，其他属性也都是来自wrapper，比如doc，source等等。</p>
+<p>使用标准库里的functools.wraps，可以基本解决这个问题。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">from functools import wraps</span><br><span class="line"></span><br><span class="line">def logging(func):</span><br><span class="line">    @wraps(func)</span><br><span class="line">    def wrapper(*args, **kwargs):</span><br><span class="line">        <span class="string">""</span><span class="string">"print log before a function."</span><span class="string">""</span></span><br><span class="line">        <span class="built_in">print</span> <span class="string">"[DEBUG] &#123;&#125;: enter &#123;&#125;()"</span>.format(datetime.now(), func.__name__)</span><br><span class="line">        <span class="built_in">return</span> func(*args, **kwargs)</span><br><span class="line">    <span class="built_in">return</span> wrapper</span><br><span class="line"></span><br><span class="line">@logging</span><br><span class="line">def say(something):</span><br><span class="line">    <span class="string">""</span><span class="string">"say something"</span><span class="string">""</span></span><br><span class="line">    <span class="built_in">print</span> <span class="string">"say &#123;&#125;!"</span>.format(something)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> say.__name__  <span class="comment"># say</span></span><br><span class="line"><span class="built_in">print</span> say.__doc__ <span class="comment"># say something</span></span><br></pre></td></tr></table></figure>
+<p>看上去不错！主要问题解决了，但其实还不太完美。因为函数的签名和源码还是拿不到的。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import inspect</span><br><span class="line"><span class="built_in">print</span> inspect.getargspec(say)  <span class="comment"># failed</span></span><br><span class="line"><span class="built_in">print</span> inspect.getsource(say)  <span class="comment"># failed</span></span><br></pre></td></tr></table></figure>
+<p>如果要彻底解决这个问题可以借用第三方包，比如wrapt。后文有介绍。   </p>
+<p><strong>0x3.8.3不能装饰@staticmethod 或者 @classmethod</strong><br>当你想把装饰器用在一个静态方法或者类方法时，不好意思，报错了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Python</span><br><span class="line">class Car(object):</span><br><span class="line">    def __init__(self, model):</span><br><span class="line">        self.model = model</span><br><span class="line"></span><br><span class="line">    @logging  <span class="comment"># 装饰实例方法，OK</span></span><br><span class="line">    def run(self):</span><br><span class="line">        <span class="built_in">print</span> <span class="string">"&#123;&#125; is running!"</span>.format(self.model)</span><br><span class="line"></span><br><span class="line">    @logging  <span class="comment"># 装饰静态方法，Failed</span></span><br><span class="line">    @staticmethod</span><br><span class="line">    def check_model_for(obj):</span><br><span class="line">        <span class="keyword">if</span> isinstance(obj, Car):</span><br><span class="line">            <span class="built_in">print</span> <span class="string">"The model of your car is &#123;&#125;"</span>.format(obj.model)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span> <span class="string">"&#123;&#125; is not a car!"</span>.format(obj)</span><br><span class="line"></span><br><span class="line"><span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">Traceback (most recent call last):</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">  File "</span>example_4.py<span class="string">", line 10, in logging</span></span><br><span class="line"><span class="string">    @wraps(func)</span></span><br><span class="line"><span class="string">  File "</span>C:\Python27\lib\functools.py<span class="string">", line 33, in update_wrapper</span></span><br><span class="line"><span class="string">    setattr(wrapper, attr, getattr(wrapped, attr))</span></span><br><span class="line"><span class="string">AttributeError: 'staticmethod' object has no attribute '__module__'</span></span><br><span class="line"><span class="string">"</span><span class="string">""</span></span><br></pre></td></tr></table></figure>
+<p>前面已经解释了@staticmethod这个装饰器，其实它返回的并不是一个callable对象，而是一个staticmethod对象，那么它是不符合装饰器要求的（比如传入一个callable对象），你自然不能在它之上再加别的装饰器。要解决这个问题很简单，只要把你的装饰器放在@staticmethod之前就好了，因为你的装饰器返回的还是一个正常的函数，然后再加上一个@staticmethod是不会出问题的。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class Car(object):</span><br><span class="line">    def __init__(self, model):</span><br><span class="line">        self.model = model</span><br><span class="line"></span><br><span class="line">    @staticmethod</span><br><span class="line">    @logging  <span class="comment"># 在@staticmethod之前装饰，OK</span></span><br><span class="line">    def check_model_for(obj):</span><br><span class="line">        pass</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x4元类编程"><a href="#0x4元类编程" class="headerlink" title="0x4元类编程"></a>0x4元类编程</h1><p>要搞懂元类，我们还是先从对象说起。<br><strong>0x4.1元类的理解</strong><br><strong>0x4.1.1对象（Object）</strong><br>Python 一切皆对象，这句话你一定有听说过（现在你就听说了），一个数字是对象，一个字符串是对象，一个列表是对象，一个字典是对象，例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; i = 10</span><br><span class="line">&gt;&gt;&gt; s = <span class="string">"abc"</span></span><br><span class="line">&gt;&gt;&gt; nums = [1,2,3]</span><br><span class="line">&gt;&gt;&gt; dicts = &#123;<span class="string">"name"</span>:<span class="string">"zhang"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>等号右边是对象，左边是给这些对象取的名字，任何对象都有3个关键属性：标识、值、类型。</p>
+<ul>
+<li><p>标识<br>  标识就和人的身份证ID一样，每个对象有唯一ID标识，在整个生命周期中都不会变，你可以认为标识是这个对象在计算机内存中的地址。通过函数 id() 可以查看对象的ID标识。</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; id(i)</span><br><span class="line">40592592</span><br><span class="line">&gt;&gt;&gt; id(s)</span><br><span class="line">44980584</span><br></pre></td></tr></table></figure></li>
+<li><p>对象值<br>  对象的第二个属性是值，值很好理解，比如 i 的值是 10，s 的值是 abc，nums 的值就是 1,2,3。</p>
+</li>
+<li><p>类型<br>  对象还有一个很重要的属性就是类型，任何对象都有属于自己的类型，对象就是由它的类型构造出来的，比如上面的 i 的类型是 int 类型，这个对象就是由 int 构造出来的。s 类型是字符串类型，nums 的类型是列表类型，dicts 的类型是字典类型，它们都是由对应的类型构建出来的。</p>
+</li>
+</ul>
+<p>通过 type() 可以查看对象的类型。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(i)</span><br><span class="line">&lt;class <span class="string">'int'</span>&gt;</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(s)</span><br><span class="line">&lt;class <span class="string">'str'</span>&gt;</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(nums)</span><br><span class="line">&lt;class <span class="string">'list'</span>&gt;</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(dicts)</span><br><span class="line">&lt;class <span class="string">'dict'</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>对象的类型也和ID标识一样，确定好之后就不会再变化了。  </p>
+<p><strong>0x4.1.2类与（实例）对象</strong><br>除了系统已经定义好了的整数类型，字符串类型，列表等类型之外，我们还可以创建自己的类型，用关键字 class 来定义。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; class Person:</span><br><span class="line">        <span class="comment"># 这里的 self 指某个实例对象自己</span></span><br><span class="line">...     def __init__(self, name):</span><br><span class="line">            <span class="comment"># name 是实例的属性</span></span><br><span class="line">...         self.name = name</span><br><span class="line">        <span class="comment"># live 是类的属性</span></span><br><span class="line">        live = True</span><br></pre></td></tr></table></figure>
+<p>这里的 Person 就是自定义类，类是一个抽象的模版，既不指张三也不是李四，现在我们可以通过调用这个类来构造（实例化）出一个具体的，实在的，有名字的对象出来，这个对象称之为实例对象。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; p1 = Person(<span class="string">"zhangsan"</span>)</span><br><span class="line">&gt;&gt;&gt; p1.name</span><br><span class="line"><span class="string">'zhangsan'</span></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">&gt;&gt;&gt; p2 = Person(<span class="string">"lisi"</span>)</span><br><span class="line">&gt;&gt;&gt; p2.name</span><br><span class="line"><span class="string">'lisi'</span></span><br></pre></td></tr></table></figure>
+<p>这里的 p1、p2 就是实例化之后的（实例）对象，这两个对象的类型都是 Person 类，类与（实例）对象的关系就像一个车辆模具与一辆被造出来的真实车的关系一样。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; p1</span><br><span class="line">&lt;__main__.Person object at 0x0195AA30&gt;</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(p1)</span><br><span class="line">&lt;class <span class="string">'__main__.Person'</span>&gt; <span class="comment"># 这里的__main__是模块名称</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>0x4.13类也是对象（又叫类对象）</strong><br>刚刚我们说了一切都是对象，实例（真实车）是对象，类（模具）当然也是对象，因为它也是个实实在在存在的东西，</p>
+<p>当 Python 解释器执行到关键字 class 这个指令的时候，在内部就会创建一个名为 “Person” 的类，这个类也是个对象，我们称之为类对象（注意区别实例对象），它一样有ID标识、有类型、有值。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; id(Person)</span><br><span class="line">26564024</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(Person)</span><br><span class="line">&lt;class <span class="string">'type'</span>&gt;</span><br><span class="line">&gt;&gt;&gt; Person</span><br><span class="line">&lt;class <span class="string">'__main__.Person'</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>我们注意到这个　Person　这个类对象的类型叫 “type”，也就是说 Person 类是由 type 创建出来的，现在你要记住，p1，p2 是实例对象，而 Person 是类对象。另外，这个 type 是什么鬼？</p>
+<p>我们来回顾一下，实例对象 p1 的类型是类对象 Person，Person 的类型 type</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; nums = [1,2,3]</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(nums)</span><br><span class="line">&lt;class <span class="string">'list'</span>&gt;</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(list)</span><br><span class="line">&lt;class <span class="string">'type'</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>nums 的类型是 list，list 的类型也是 type，字典类（dict）的类型也是 type，所有类的类型都是 type，也就是说所有的类都是由type 创建的。这个 type 就是元类，道生一，一生二，三生万物，元类就是 Python 中的造物主。（元类自己也是对象）<br><img src="../../images/python/python/mataclass.png" alt=""><br>现在我们都知道类（对象）可以使用 class 关键字创建，我们还知道类（对象）的类型是 type，既然知道了它的类型是　type，那么肯定可以通过 type（元类）来创建 </p>
+<p><strong>0x4.2类的创建</strong><br><strong>0x4.2.1类是动态创建的</strong><br>我们知道，类(class)可以有多个实例(instance)。而创建实例的方法就是调用类的构造函数(constructor)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class Spam(object):</span><br><span class="line">    def __init__(self, name):</span><br><span class="line"></span><br><span class="line">        self.name = name</span><br><span class="line"></span><br><span class="line">spam = Spam(<span class="string">'name'</span>)</span><br></pre></td></tr></table></figure>
+<p>上例我们定义了一个类，并调用类的构造函数创建了该类的一个实例。我们知道类也可以看作类 type 的一个实例，那么如何用 type 的构造函数来动态创建一个类呢？我们先看看 type 的构造函数：</p>
+<p>type(name, bases, dict):</p>
+<ul>
+<li>name: 字符串类型，存放新类的名字</li>
+<li>bases: 元组(tuple)类型，指定类的基类/父类</li>
+<li>dict: 字典类型，存放该类的所有属性(attributes)和方法(method)</li>
+</ul>
+<p>例如下面的类：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Base:</span><br><span class="line">    counter = 10</span><br><span class="line"></span><br><span class="line">class Derived(Base):</span><br><span class="line">    def get_counter(self):</span><br><span class="line">        <span class="built_in">return</span> self.counter</span><br><span class="line"></span><br><span class="line">x = Derived()</span><br><span class="line">x.get_counter()</span><br><span class="line"><span class="comment">#&gt; 10</span></span><br></pre></td></tr></table></figure>
+<p>我们可以调用 type(…) 来动态创建这两个类：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Base = <span class="built_in">type</span>(<span class="string">'Base'</span>, (), &#123;<span class="string">'counter'</span>: 10&#125;)</span><br><span class="line">Derived = <span class="built_in">type</span>(<span class="string">'Derived'</span>, (Base,), dict(get_counter=lambda self: self.counter))</span><br><span class="line"></span><br><span class="line">x = Derived()</span><br><span class="line">x.get_counter()</span><br><span class="line"><span class="comment">#&gt; 10</span></span><br></pre></td></tr></table></figure>
+<p>是的，你没有猜错，Python 在遇到 class … 关键字时会一步步解析类的内容，最终调用 type(…) （准确说是指定的元类）的构造函数来创建类，换句话说上面两种定义类的方式是等价的。在下节我们会具体讲解。<br><strong>0x4.2.2类的创建过程</strong> </p>
+<p>要了解元类(meta-class)的作用，我们就需要了解 Python 里类的创建过程 ，如下：<br><img src="../../images/python/python/class-creation.svg" alt=""></p>
+<ol>
+<li>当 Python 见到 class 关键字时，会首先解析 class … 中的内容。例如解析基类信息，最重要的是找到对应的元类信息（默认是 type)。</li>
+<li>元类找到后，Python 需要准备 namespace （也可以认为是上节中 type 的 dict 参数）。如果元类实现了 <strong>prepare</strong> 函数，则会调用它来得到默认的 namespace 。</li>
+<li>之后是调用 exec 来执行类的 body，包括属性和方法的定义，最后这些定义会被保存进 namespace。</li>
+<li>上述步骤结束后，就得到了创建类需要的所有信息，这时 Python 会调用元类的构造函数来真正创建类。    </li>
+</ol>
+<p>如果你想在类的创建过程中做一些定制(customization)的话，创建过程中任何用到了元类的地方，我们都能通过覆盖元类的默认方法来实现定制。这也是元类“无所不能”的所在，它深深地嵌入了类的创建过程。    </p>
+<p><strong>0x4.3元类的定义和使用</strong></p>
+<p>元类继承自type,行为通过实现</p>
+<p><code>__new__(meta,name,bases,class_dict)</code></p>
+<p>类似于类中的<code>__new__</code>,用于定义元类的创建行为</p>
+<p><code>__init__(cls, name, bases,attr_dict)</code></p>
+<p>类似于类中的<code>__init__</code>,用于初始化元类,通过元类产生类时会用到.</p>
+<p><code>__call__(cls)</code></p>
+<p>定义类实例化时的行为.</p>
+<p>类方法<code>__prepare__(meta, name, bases)</code></p>
+<p>解释器调用元类的<code>__new__</code>方法之前会先调用<code>__prepare__</code>方法,使用类定义体中的属性创建映射.<code>__prepare__</code>方法的第一个参数是元类,随后两个参数分别是要构建的类的名称和基类组成的元组,返回值必须是映射.元类构建新类时,<code>__prepare__</code>方法返回的映射会传给<code>__new__</code> 方法的最后一个参数,然后再传给<code>__init__</code> 方法.</p>
+<p>使用元类的类实例化产出类的顺序是:</p>
+<ol>
+<li><code>meta.__prepare__</code></li>
+<li><code>meta.__new__</code></li>
+<li><code>meta.__init__</code></li>
+</ol>
+<p>类实例化对象的顺序是:</p>
+<ol>
+<li><code>clz.__call__</code></li>
+<li><code>clz.__new__</code></li>
+<li><code>clz.__init__</code></li>
+</ol>
+<p>实例:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">class meta_A(<span class="built_in">type</span>):</span><br><span class="line">    def __call__(clz,*args, **kwargs):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"clz.call"</span>)</span><br><span class="line">        <span class="built_in">return</span> super().__call__(*args, **kwargs)</span><br><span class="line">    def __new__(meta,name,bases,class_dict):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"meta.new"</span>)</span><br><span class="line">        <span class="built_in">return</span> type.__new__(meta,name,bases,class_dict)</span><br><span class="line">    def __init__(cls, name, bases,attr_dict):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"meta.init"</span>)</span><br><span class="line">        super().__init__(name, bases,attr_dict)</span><br><span class="line">    @classmethod</span><br><span class="line">    def __prepare__(meta, name, bases):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">'meta.prepare'</span>)</span><br><span class="line">        <span class="built_in">return</span> dict()</span><br><span class="line"></span><br><span class="line">class A(metaclass = meta_A):</span><br><span class="line">    def __new__(cls,*args, **kwargs):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">'clz.new'</span>)</span><br><span class="line">        <span class="built_in">return</span> super().__new__(cls)</span><br><span class="line">    def __init__(self,name):</span><br><span class="line">        self.name=name</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">'clz.init'</span>)</span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">meta.prepare</span><br><span class="line">meta.new</span><br><span class="line">meta.init</span><br><span class="line"></span><br><span class="line">a = A(<span class="string">"qw"</span>)</span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">clz.call</span><br><span class="line">clz.new</span><br><span class="line">clz.init</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(a.name)</span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">qw</span><br></pre></td></tr></table></figure>
+
+<p><strong>0x4.4元类的应用</strong> </p>
+<blockquote>
+<p>元类就是深度的魔法，99%的用户应该根本不必为此操心。如果你想搞清楚究竟是否需要用到元类，那么你就不需要它。那些实际用到元类的人都非常清楚地知道他们需要做什么，而且根本不需要解释为什么要用元类。</p>
+</blockquote>
+<p><strong>0x.4.4.1强制子类实现特定方法</strong><br>假设你是一个库的作者，例如下面的代码，其中的方法 foo 要求子类实现方法 bar ：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># library code</span></span><br><span class="line">class Base(object):</span><br><span class="line">    def foo(self):</span><br><span class="line">        <span class="built_in">return</span> self.bar()</span><br><span class="line"></span><br><span class="line"><span class="comment"># user code</span></span><br><span class="line">class Derived(Base):</span><br><span class="line">    def bar():</span><br><span class="line">        <span class="built_in">return</span> None</span><br></pre></td></tr></table></figure>
+<p>但作为库的作者，我们根本无法预测用户会写出什么样的代码，有什么方法能强制用户在子类中实现方法 bar 呢？用 meta-class 可以做到。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Meta(<span class="built_in">type</span>):</span><br><span class="line">    def __new__(cls, name, bases, namespace, **kwargs):</span><br><span class="line">        <span class="keyword">if</span> name != <span class="string">'Base'</span> and <span class="string">'bar'</span> not <span class="keyword">in</span> namespace:</span><br><span class="line">            raise TypeError(<span class="string">'bad user class'</span>)</span><br><span class="line">        <span class="built_in">return</span> super().__new__(cls, name, bases, namespace, **kwargs)</span><br><span class="line"></span><br><span class="line">class Base(object, metaclass=Meta):</span><br><span class="line">    def foo(self):</span><br><span class="line">        <span class="built_in">return</span> self.bar()</span><br><span class="line">现在，我们尝试定义一个不包含 bar 方法的子类，在类的定义（或者说生成）阶段就会报错：</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; class Derived(Base):</span><br><span class="line">...     pass</span><br><span class="line">...</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line 4, <span class="keyword">in</span> __new__</span><br><span class="line">TypeError: bad user class</span><br></pre></td></tr></table></figure>
+<p><strong>0x4.4.2注册所有子类</strong><br>有时我们会希望获取继承了某个类的子类，例如，实现了基类 Fruit，想知道都有哪些子类继承了它，用元类就能实现这个功能：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Meta(<span class="built_in">type</span>):</span><br><span class="line">    def __init__(cls, name, bases, namespace, **kwargs):</span><br><span class="line">        super().__init__(name, bases, namespace, **kwargs)</span><br><span class="line">        <span class="keyword">if</span> not hasattr(cls, <span class="string">'registory'</span>):</span><br><span class="line">            <span class="comment"># this is the base class</span></span><br><span class="line">            cls.registory = &#123;&#125;</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># this is the subclass</span></span><br><span class="line">            cls.registory[name.lower()] = cls</span><br><span class="line"></span><br><span class="line">class Fruit(object, metaclass=Meta):</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line">class Apple(Fruit):</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line">class Orange(Fruit):</span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
+<p>之后，我们可以查看所有 Fruit 的子类：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; Fruit.registory</span><br><span class="line">&#123;<span class="string">'apple'</span>: &lt;class <span class="string">'__main__.Apple'</span>&gt;, <span class="string">'orange'</span>: &lt;class <span class="string">'__main__.Orange'</span>&gt;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>new vs init</strong><br>上面的例子中我们分别用了 <code>__new__</code>和 <code>__init__</code>，但其实这两个例子里用哪种方法都是可行的。</p>
+<p><code>__new__</code>用来创建一个（未初始化）实例；<code>__init__</code>则是用来初始化一个实例。在元类的 <code>__new__</code>方法中，因为类实例还没有创建，所以可以更改最后生成类的各项属性：诸如名称，基类或属性，方法等。而在 <code>__init__</code> 中由于类已经创建完成，所以无法改变。正常情况下不需要关心它们的区别。   </p>
+<p><strong>0x4.5<code>__metaclass__</code>的属性</strong><br>你可以在写一个类的时候为其添加 <code>__metaclass__</code> 属性， 定义了<code>__metaclass__</code>就定义了这个类的元类。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; class Foo(object):</span><br><span class="line">...     __metaclass__ = something...</span><br><span class="line">... [...]</span><br></pre></td></tr></table></figure>
+<p>例如：当我们写如下代码时：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; class Foo(Bar):</span><br><span class="line">...     pass</span><br></pre></td></tr></table></figure>
+<p>在该类定义的时候，并未在内存中生成，直到它被调用， Python做了如下的操作：</p>
+<ol>
+<li>Foo中有<strong>metaclass</strong>属性吗？如果是，Python会在内存中通过<strong>metaclass</strong>创建一个名字为Foo的类对象（这边是类对象，请注意）</li>
+<li>如果Python没有找到<strong>metaclass</strong>, 它会继续在父类中寻找<strong>metaclass</strong>属性，并尝试做和前面同样的操作</li>
+<li>如果Python在任何父类中都找不到<strong>metaclass</strong>， 它就会在模块层次中去寻找<strong>metaclass</strong>， 并尝试做同样的操作</li>
+<li>如果还是找不到<strong>metaclass</strong>， Python会用内置的type来创建这个类对象 </li>
+</ol>
+<h1 id="0x5描述符"><a href="#0x5描述符" class="headerlink" title="0x5描述符"></a>0x5描述符</h1><p>创建一个描述符类，它的实例对象作为另一个类的属性。<br><strong>0x5.1描述符定义</strong></p>
+<ul>
+<li>一个描述符是一个有“绑定行为”的对象属性(object attribute)，它的访问控制会被描述器协议方法重写。</li>
+<li>任何定义了 <code>__get__</code>, <code>__set__</code> 或者 <code>__delete__</code> 任一方法的类称为描述符类，其实例对象便是一个描述符，这些方法称为描述符协议。</li>
+<li>当对一个实例属性进行访问时，Python 会按 <code>obj.__dict__ → type(obj).__dict__ → type(obj)</code>的父类<code>.__dict__</code> 顺序进行查找，如果查找到目标属性并发现是一个描述符，Python 会调用描述符协议来改变默认的控制行为。</li>
+<li>描述符是 <code>@property@classmethod@staticmethod</code> 和 <code>super</code> 的底层实现机制。</li>
+</ul>
+<p><strong>0x5.2描述符的特性</strong></p>
+<ul>
+<li>同时定义了<code>__get__</code>和<code>__set__</code>的描述符称为 数据描述符(data descriptor)；仅定义了<code>__get__</code> 的称为 非数据描述符(non-data descriptor) 。<br>两者区别在于：如果<code>obj.__dict__</code>中有与描述符同名的属性，若描述符是数据描述符，则优先调用描述符，若是非数据描述符，则优先使用 <code>obj.__dict__</code> 中属性。</li>
+<li>描述符协议必须定义在类的层次上，否则无法被自动调用。   </li>
+</ul>
+<p><strong>0x5.3描述符协议</strong> </p>
+<ul>
+<li><code>__get__(self, instance, owner)</code><br>  :param self: 描述符对象本身<br>  :param instance: 使用描述符的对象的实例<br>  :param owner: 使用描述符的对象拥有者  </li>
+<li><code>__set__(self, instance, value)</code><br>  :param value: 对描述符的赋值  </li>
+<li><code>__delete__(self, instance)</code>  </li>
+</ul>
+<p><strong>0x5.4描述符发挥作用的地方</strong><br>decriptor发挥作用的时候就在于执行这3类操作的时候：</p>
+<ul>
+<li>当访问x.d的时候，将自动调用描述符类中的<code>__get__</code>   </li>
+<li>当赋值x.d的时候，将自动调用描述符类中的<code>__set__</code>   </li>
+<li>当删除x.d的时候，将自动调用描述符类中的<code>__delete__</code>   </li>
+</ul>
+<p><strong>0x5.5描述符的实例</strong><br>首先定义一个数据描述符类</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Descriptor(object):</span><br><span class="line">    def __init__(self, value):</span><br><span class="line">        self.value = value</span><br><span class="line"></span><br><span class="line">    def __get__(self, instance, owner):</span><br><span class="line">        <span class="built_in">print</span> <span class="string">"访问属性"</span></span><br><span class="line">        <span class="built_in">return</span> self.value</span><br><span class="line"></span><br><span class="line">    def __set__(self, instance, value):</span><br><span class="line">        <span class="built_in">print</span> <span class="string">"设置属性值"</span></span><br><span class="line">        self.value = value</span><br></pre></td></tr></table></figure>
+<p>再来定义一个调用数据描述符的类</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class Myclass(object):</span><br><span class="line">    desc = Descriptor(5)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="built_in">print</span> Myclass.desc</span><br></pre></td></tr></table></figure>
+<p>访问结果为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">访问属性</span><br><span class="line">5</span><br></pre></td></tr></table></figure>
+<p>发现访问Myclass的desc属性时，调用了描述符的<code>__get__()</code>方法。这就达到了描述符的作用（可以改变对象属性的访问）    </p>
+<blockquote>
+<p>调用原理：对于类属性描述符，如果解析器发现属性x是一个描述符的话，在内部通过<code>type.__getattribute__()</code>（访问属性时无条件调用，最先调用），它能把<code>Class.x</code>转换成<code>Class.__dict__[‘x’].__get__(None, Class)</code>来访问</p>
+</blockquote>
+<p><strong>0x5.6python中访问一个属性的优先级</strong><br>上面把描述符定义成了类属性，那我们要把他定义成对象属性会有什么样的异同呢？  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">class Descriptor(object):</span><br><span class="line">    def __init__(self, value):</span><br><span class="line">        self.value = value</span><br><span class="line"></span><br><span class="line">    def __get__(self, instance, owner):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"访问属性"</span>)</span><br><span class="line">        <span class="built_in">return</span> self.value</span><br><span class="line"></span><br><span class="line">    def __set__(self, instance, value):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"设置属性值"</span>)</span><br><span class="line">        self.value = value</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Myclass(object):</span><br><span class="line">    desc = Descriptor(5)</span><br><span class="line"></span><br><span class="line">    def __init__(self, desc):</span><br><span class="line">        self.desc = desc     <span class="comment"># 与类属性同名的属性</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    myclass = Myclass(3)</span><br><span class="line">    <span class="built_in">print</span>(myclass.desc)</span><br></pre></td></tr></table></figure>
+<p>可以看出初始化时访问了描述符的<code>__set__()</code>方法，访问属性值时访问了描述符的<code>__get__()</code>方法。这样为什么又调用描述符的方法了呢？<br>为了解释这个问题，我们要先说一下在python中访问一个属性的优先级，如下：</p>
+<ul>
+<li>类属性</li>
+<li>数据描述符</li>
+<li>实例属性</li>
+<li>非数据描述符</li>
+<li>默认为getattr()（找不到的情况下）  </li>
+</ul>
+<p>然后我们打印出上面代码类和实例的属性列表：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    myclass = Myclass(3)</span><br><span class="line">    <span class="built_in">print</span> <span class="string">"instance:  "</span>, myclass.__dict__</span><br><span class="line">    <span class="built_in">print</span> <span class="string">"Class:    "</span>, Myclass.__dict__</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">设置属性值</span><br><span class="line">instance:   &#123;&#125;</span><br><span class="line">Class:     &#123;<span class="string">'__module__'</span>: <span class="string">'__main__'</span>, <span class="string">'desc'</span>: &lt;__main__.Descriptor object at 0x000001DE4C0959B0&gt;, <span class="string">'__init__'</span>: &lt;<span class="keyword">function</span> Myclass.__init__ at 0x000001DE4C092488&gt;, <span class="string">'__dict__'</span>: &lt;attribute <span class="string">'__dict__'</span> of <span class="string">'Myclass'</span> objects&gt;, <span class="string">'__weakref__'</span>: &lt;attribute <span class="string">'__weakref__'</span> of <span class="string">'Myclass'</span> objects&gt;, <span class="string">'__doc__'</span>: None&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现实例对象的属性中并没有desc，而相反，类属性中却有它。这是为什么呢？</p>
+<blockquote>
+<p>按照上面的属性访问优先级的理论，数据描述符 &gt; 实例属性。当python发现实例对象的字典中有与定义的描述符有相同名字的对象时，描述符优先，会覆盖掉实例属性。python会改写默认的行为，去调用描述符的方法来代替。</p>
+</blockquote>
+<p>我们来验证一下上面的理论，优先级实例属性 &gt; 非数据描述符。首先我们定义一下非数据描述符（只有<code>__get__()</code>方法）   </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">class Descriptor(object):</span><br><span class="line">    def __init__(self, value):</span><br><span class="line">        self.value = value</span><br><span class="line"></span><br><span class="line">    def __get__(self, instance, owner):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"访问属性"</span>)</span><br><span class="line">        <span class="built_in">return</span> self.value</span><br><span class="line"></span><br><span class="line">    <span class="comment"># def __set__(self, instance, value):</span></span><br><span class="line">    <span class="comment">#     print "设置属性值"</span></span><br><span class="line">    <span class="comment">#     self.value = value</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Myclass(object):</span><br><span class="line">    desc = Descriptor(5)</span><br><span class="line"></span><br><span class="line">    def __init__(self, desc):</span><br><span class="line">        self.desc = desc     <span class="comment"># 与类属性同名的属性</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    myclass = Myclass(3)</span><br><span class="line">    <span class="built_in">print</span>(myclass.desc)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"instance:  "</span>, myclass.__dict__)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"Class:    "</span>, Myclass.__dict__)</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">3</span><br><span class="line">instance:   &#123;<span class="string">'desc'</span>: 3&#125;</span><br><span class="line">Class:     &#123;<span class="string">'__module__'</span>: <span class="string">'__main__'</span>, <span class="string">'desc'</span>: &lt;__main__.Descriptor object at 0x000001E2CC10C9B0&gt;, <span class="string">'__init__'</span>: &lt;<span class="keyword">function</span> Myclass.__init__ at 0x000001E2CC333400&gt;, <span class="string">'__dict__'</span>: &lt;attribute <span class="string">'__dict__'</span> of <span class="string">'Myclass'</span> objects&gt;, <span class="string">'__weakref__'</span>: &lt;attribute <span class="string">'__weakref__'</span> of <span class="string">'Myclass'</span> objects&gt;, <span class="string">'__doc__'</span>: None&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出，这种情况下访问实例属性，并没有调用描述符的<code>__get__()</code>方法。而是调用了本身的属性。可以看出理论是正确的。    </p>
+<p><strong>0x5.6使用属性修饰符@property创建描述符</strong>   </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">class PropertyDesc(object):</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self._name = <span class="string">''</span></span><br><span class="line"></span><br><span class="line">    @property</span><br><span class="line">    def name(self):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Getting: %s"</span> % self._name)</span><br><span class="line">        <span class="built_in">return</span> self._name</span><br><span class="line"></span><br><span class="line">    @name.setter</span><br><span class="line">    def name(self, value):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Setting: %s"</span> % value)</span><br><span class="line">        self._name = value</span><br><span class="line"></span><br><span class="line">    @name.deleter</span><br><span class="line">    def name(self):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Deleting: %s"</span> %self._name)</span><br><span class="line">        del self._name</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    pro = PropertyDesc()</span><br><span class="line">    pro.name = <span class="string">"haha"</span></span><br><span class="line">    <span class="built_in">print</span>(pro.name)</span><br><span class="line">    del pro.name</span><br></pre></td></tr></table></figure>
+<p>运行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Setting: haha</span><br><span class="line">Getting: haha</span><br><span class="line">haha</span><br><span class="line">Deleting: haha</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="0x6import-hook"><a href="#0x6import-hook" class="headerlink" title="0x6import hook"></a>0x6import hook</h1><p><code>import hook</code> 通常被译为 探针。我们可以认为每当导入模块的时候，所触发的操作就是 <code>import hook。</code>使用<code>import</code> 的 <code>hook</code> 机制可以让我们做很多事情，比如加载网络上的模块，在导入模块时对模块进行修改，自动安装缺失模块，上传审计信息，延迟加载等等。     </p>
+<p>理解 <code>import hook</code> 需要先了解 <code>Python</code> 导入模块的过程。<br>*<em>0x6.1导入过程 *</em><br>Python 通常使用 import 语句来实现类库的引用，当然内建的 <code>__import__()</code> 函数等都能实现。 import 语句负责做两件事：</p>
+<ul>
+<li>查找模块</li>
+<li>加载模块到当前名字空间    </li>
+</ul>
+<p>那么，一个模块的导入过程大致可以分为三个步骤：搜索、加载 和 名字绑定。         </p>
+<p><strong>0x6.1.1 搜索</strong><br>搜索是整个导入过程的核心，也是最为复杂的一步。这个过程主要是完成查找要引入模块的功能，查找的过程如下：</p>
+<ol>
+<li>在缓存 sys.modules 中查找要导入的模块，若找到则直接返回该模块对象</li>
+<li>如果在 sys.modules 中没有找到相应模块的缓存，则顺序搜索 sys.meta_path，逐个借助其中的 finder 来查找模块，若找到则加载后返回相应模块对象。</li>
+<li>如果以上步骤都没找到该模块，则执行默认导入。即如果模块在一个包中（如import a.b），则以 a.<strong>path</strong> 为搜索路径进行查找；如果模块不在一个包中（如import a），则以 sys.path 为搜索路径进行查找。</li>
+<li>如果都未找到，则抛出 ImportError 异常。 </li>
+</ol>
+<p>查找过程也会检查⼀些隐式的 finder 对象，不同的 Python 实现有不同的隐式finder，但是都会有 sys.path_hooks, sys.path_importer_cache 以及sys.path。</p>
+<p><strong>0x6.1.2加载</strong><br>对于搜索到的模块，如果在缓存 sys.modules 中则直接返回模块对象，否则就需要加载模块以创建一个模块对象。加载是对模块的初始化处理，包括以下步骤：</p>
+<ul>
+<li>设置属性：包括 <code>__name__、__file__、__package__、__loader__</code> 和 <code>__path__</code> 等</li>
+<li>编译源码：将模块文件（对于包，则是其对应的 <code>__init__.py</code> 文件）编译为字节码（*.pyc 或者 *.pyo），如果字节码文件已存在且仍然是最新的，则不重新编译</li>
+<li>执行字节码：执行编译生成的字节码（即模块文件或 <code>__init__.py</code>文件中的语句）</li>
+</ul>
+<p>需要注意的是，加载不只是发生在导入时，还可以发生在 reload 时。  </p>
+<p><strong>0x6.1.3 名字绑定</strong><br>加载完模块后，作为最后一步，import 语句会为 导入的对象 绑定名字，并把这些名字加入到当前的名字空间中。其中，导入的对象 根据导入语句的不同有所差异：</p>
+<ul>
+<li>如果导入语句为 import obj，则对象 obj 可以是包或者模块</li>
+<li>如果导入语句为 from package import obj，则对象 obj 可以是 package 的子包、package 的属性或者 package 的子模块</li>
+<li>如果导入语句为 from module import obj，则对象 obj 只能是 module 的属性   </li>
+</ul>
+<p><strong>0x6.2模块缓存</strong><br>进行搜索时，搜索的第一个地方是便是 sys.modules。sys.modules 是一个字典，键字为模块名，键值为模块对象。它包含了从 Python 开始运行起，被导入的所有模块的一个缓存，包括中间路径。所以，假如 foo.bar.baz 前期已被导入，那么，sys.modules 将包含进入 foo，foo.bar 和 foo.bar.baz的入口。每个键都有自己的数值，都有对应的模块对象。也就是说，如果导入 foo.bar.baz 则整个层次结构下的模块都被加载到了内存。</p>
+<p>可以删除 sys.modules 中对应的的键或者将值设置为 None 来使缓存无效。</p>
+<p>当启动 Python 解释器时，打印一下 sys.modules 中的 key：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import sys</span><br><span class="line">&gt;&gt;&gt; sys.modules.keys()</span><br><span class="line">[<span class="string">'copy_reg'</span>, <span class="string">'sre_compile'</span>, <span class="string">'_sre'</span>, <span class="string">'encodings'</span>, <span class="string">'site'</span>, <span class="string">'__builtin__'</span>, <span class="string">'sysconfig'</span>, <span class="string">'__main__'</span>, <span class="string">'encodings.encodings'</span>, <span class="string">'abc'</span>, <span class="string">'posixpath'</span>, <span class="string">'_weakrefset'</span>, <span class="string">'errno'</span>, <span class="string">'encodings.codecs'</span>, <span class="string">'sre_constants'</span>, <span class="string">'re'</span>, <span class="string">'_abcoll'</span>, <span class="string">'types'</span>, <span class="string">'_codecs'</span>, <span class="string">'encodings.__builtin__'</span>, <span class="string">'_warnings'</span>, <span class="string">'genericpath'</span>, <span class="string">'stat'</span>, <span class="string">'zipimport'</span>, <span class="string">'_sysconfigdata'</span>, <span class="string">'warnings'</span>, <span class="string">'UserDict'</span>, <span class="string">'encodings.utf_8'</span>, <span class="string">'sys'</span>, <span class="string">'codecs'</span>, <span class="string">'readline'</span>, <span class="string">'_sysconfigdata_nd'</span>, <span class="string">'os.path'</span>, <span class="string">'sitecustomize'</span>, <span class="string">'signal'</span>, <span class="string">'traceback'</span>, <span class="string">'linecache'</span>, <span class="string">'posix'</span>, <span class="string">'encodings.aliases'</span>, <span class="string">'exceptions'</span>, <span class="string">'sre_parse'</span>, <span class="string">'keyrings'</span>, <span class="string">'os'</span>, <span class="string">'_weakref'</span>]</span><br></pre></td></tr></table></figure>
+<p>可以看出一些模块已经被解释器导入，但是我们却不能直接使用这些模块。这是因为这些模块还没有被绑定到当前名字空间，仍然需要执行 import 语句才能完成名字绑定。      </p>
+<p><strong>0x6.3查找器和加载器</strong>  </p>
+<p>在搜索过程中我们提到 <code>sys.meta_pat</code>h 中保存了一些 <code>finder</code> 对象。在 Python 查找的时候，如果在 <code>sys.modules</code> 中没有查找到，就会依次调用 <code>sys.meta_path</code> 中的 <code>finder</code> 对象，即调用导入协议来查找和加载模块。导入协议包含两个概念性的对象，查找器（loader） 和 加载器（loader）。<code>sys.meta_path</code> 在任何默认查找程序或 sys.path 之前搜索。默认的情况下，<br>在 Python2 中 <code>sys.meta_path</code> 是一个空列表，并没有任何 finder 对象；<br>而在 Python3 中则在 Python 中则默认包含三个查找器：第一个知道如何定位内置模块，第二个知道如何定位冻结模块，第三个搜索模块的导入路径：   </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&lt;class <span class="string">'_frozen_importlib.BuiltinImporter'</span>&gt;, &lt;class <span class="string">'_frozen_importlib.FrozenImporter'</span>&gt;, &lt;class <span class="string">'_frozen_importlib.PathFinder'</span>&gt;]</span><br></pre></td></tr></table></figure>
+<p>在 Python 中，不仅定义了 finder 和 loader 的概念，还定义了 importor 的概念：</p>
+<ul>
+<li>查找器（finder）： 决定自己是否能够通过运用其所知的任何策略找到相应的模块。在 Python2 中，finder 对象必须实现 find_module() 方法，在 Python3 中必须要实现 find_module() 或者 find_loader（) 方法。如果 finder 可以查找到模块，则会返回一个 loader 对象(在 Python 3.4中，修改为返回一个模块分支module specs，加载器在导入中仍被使用，但几乎没有责任)，没有找到则返回 None。</li>
+<li>加载器（loader）： 负责加载模块，它必须实现一个 load_module() 的方法</li>
+<li>导入器（importer）： 实现了 finder 和 loader 这两个接口的对象称为导入器</li>
+</ul>
+<p>我们可以想 sys.meta_path 中添加一些自定义的加载器，来实现在加载模块时对模块进行修改。例如一个简单的例子，在每次加载模块时打印模块信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line"></span><br><span class="line">class Watcher(object):</span><br><span class="line"></span><br><span class="line">    @classmethod</span><br><span class="line">    def find_module(cls, name, path, target=None):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Importing"</span>, name, path, target)</span><br><span class="line">        <span class="built_in">return</span> None</span><br><span class="line"></span><br><span class="line">sys.meta_path.insert(0, Watcher)</span><br><span class="line">import subprocess</span><br></pre></td></tr></table></figure>
+
+<p>输出结果： </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Importing subprocess None None</span><br><span class="line">Importing time None None</span><br><span class="line">Importing signal None None</span><br><span class="line">Importing enum None None</span><br><span class="line">Importing errno None None</span><br><span class="line">Importing threading None None</span><br><span class="line">Importing traceback None None</span><br><span class="line">Importing linecache None None</span><br><span class="line">Importing tokenize None None</span><br><span class="line">Importing re None None</span><br><span class="line">Importing sre_compile None None</span><br><span class="line">Importing _sre None None</span><br><span class="line">Importing sre_parse None None</span><br><span class="line">Importing sre_constants None None</span><br><span class="line">Importing copyreg None None</span><br><span class="line">Importing token None None</span><br><span class="line">Importing _weakrefset None None</span><br><span class="line">Importing msvcrt None None</span><br><span class="line">Importing _winapi None None</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>0x6.4导入钩子程序</strong><br>Python 的导入机制被设计为可扩展的，其基础的运行机制便是 import hook（导入钩子程序）。Python 存在两种导入钩子程序的形态：一类是上文提到的 meta hook（元钩子程序）， 另一类是 path hook（导入路径钩子程序）。</p>
+<p>在其他任何导入程序运行之前，除了 sys.modules 缓存查找，在导入处理开始时调用元钩子程序。这就允许元钩子程序覆盖 sys.path 处理程序，冻结模块，或甚至内建模块。可以通过给 sys.meta_path 添加新的查找器对象来注册元钩子程序。</p>
+<p>当相关路径项被冲突时，导入路径钩子程序作为 sys.path (或者 package.<strong>path</strong>) 处理程序的一部分被调用。可以通过给 sys.path_hooks 添加新的调用来注册导入路径钩子程序。</p>
+<p>sys.path_hooks 是由可被调用的对象组成，它会顺序的检查以决定他们是否可以处理给定的 sys.path 的一项。每个对象会使用 sys.path 项的路径来作为参数被调用。如果它不能处理该路径，就必须抛出 ImportError 异常，如果可以，则会返回一个 importer 对象。之后，不会再尝试其它的 sys.path_hooks 对象，即使前一个 importer 出错了。</p>
+<p>通过 import hook 我们可以根据需求来扩展 Python 的 import 机制。一个简单的使用导入钩子的实例，在 import 时判断库是否被安装，否则就自动安装：  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">from __future__ import print_function</span><br><span class="line">import sys</span><br><span class="line">import pip</span><br><span class="line">from importlib import import_module</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class AutoInstall(object):</span><br><span class="line">    _loaded = <span class="built_in">set</span>()</span><br><span class="line">    @classmethod</span><br><span class="line">    def find_module(cls, name, path, target=None):</span><br><span class="line">        <span class="keyword">if</span> path is None and name not <span class="keyword">in</span> cls._loaded:</span><br><span class="line">            cls._loaded.add(name)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">"Installing"</span>, name)</span><br><span class="line">            installed = pip.main([<span class="string">"install"</span>, name])</span><br><span class="line">            <span class="keyword">if</span> installed == 0:</span><br><span class="line">                <span class="built_in">return</span> import_module(name)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">return</span> None</span><br><span class="line"></span><br><span class="line">sys.meta_path.append(AutoInstall)</span><br></pre></td></tr></table></figure>
+<p>Python 还提供了一些模块和函数，可以用来实现简单的 import hook，主要有一下几种：</p>
+<ul>
+<li><code>__import__</code>: Python 的内置函数；</li>
+<li>imputil: Python 的 import 工具库，在 Python2.6 被声明废弃，Python3 中彻底移除；</li>
+<li>imp: Python2 和 Python3 都存在的一个 import 库；</li>
+<li>importlib: Python3 中最新添加，backport 到 Python2.7，但只有很小的子集（只有一个 import_module 函数）。  </li>
+</ul>
+<p><strong>0x6.5site 模块</strong><br>site 模块用于 python 程序启动的时候，做一些自定义的处理。在 Python 程序运行前，site 模块会自动导入，并按照如下顺序完成初始化工作:</p>
+<ul>
+<li>将 sys.prefix 、sys.exec_prefix 和 lib/pythonX.Y/site-packages 合成 module 的 search path。加入sys.path。eg: /home/jay/env/tornado/lib/python2.7/site-packages</li>
+<li>在添加的路径下寻找 pth 文件。 该文件中描述了添加到 sys.path 的子文件夹路径。</li>
+<li>import sitecustomize， sitecustomize 内部可以做任意的设置。</li>
+<li>import usercustomize， usercustomize 一般放在用户的 path 环境下， 如: /home/jay/.local/lib/python2.7/site-packages/usercustomize， 其内部可以做任意的设置。</li>
+</ul>
+<p>site 模块的本质可以说是补充 sys.path 路径，协助解释器预配置第三方模块目录。所以可以设置特殊的 sitecustomize.py 或者 usercustomize.py 文件, 在 python 代码执行之前，添加 import hook。  </p>
+<p><strong>0x6.6导入搜索路径</strong>   </p>
+<p>Python 在 import 时会在系统中搜索模块或者包所在的位置，sys.path 变量中保存了所有可搜索的库路径，它是一个路径名的列表，其中的路径主要分为以下几部分：</p>
+<ul>
+<li>程序主目录（默认定义）： 如果是以脚本方式启动的程序，则为启动脚本所在目录；如果在交互式解释器中，则为当前目录；</li>
+<li>PYTHONPATH目录（可选扩展）： 以 os.pathsep 分隔的多个目录名，即环境变量 -os.environ[‘PYTHONPATH’]（类似 shell 环境变量 PATH）；</li>
+<li>标准库目录（默认定义）： Python 标准库所在目录（与安装目录有关）；</li>
+<li>.pth文件目录（可选扩展）： 以 “.pth” 为后缀的文件，其中列有一些目录名（每行一个目录名）。</li>
+</ul>
+<p>因此如果想要添加库的搜索路径，可以有如下方法：</p>
+<ul>
+<li>直接修改 sys.path 列表</li>
+<li>使用 PYTHONPATH 扩展</li>
+<li>使用 .pth 文件扩展    </li>
+</ul>
+<p><strong>0x6.7重新加载</strong><br>关于 import，还有一点非常关键：加载只在第一次导入时发生。Python 这样设计的目的是因为加载是个代价高昂的操作。</p>
+<p>通常情况下，如果模块没有被修改，这正是我们想要的行为；但如果我们修改了某个模块，重复导入不会重新加载该模块，从而无法起到更新模块的作用。有时候我们希望在 运行时（即不终止程序运行的同时），达到即时更新模块的目的，内建函数 reload() 提供了这种 重新加载 机制（在 Python3 中被挪到了 imp 模块下）。</p>
+<p>关于 reload 与 import 的不同：</p>
+<ul>
+<li>import 是语句，而 reload 是函数</li>
+<li>import 使用 模块名，而 reload 使用 模块对象（即已被import语句成功导入的模块）  </li>
+</ul>
+<p>重新加载 reload(module) 有以下几个特点：</p>
+<ul>
+<li>会重新编译和执行模块文件中的顶层语句</li>
+<li>会更新模块的名字空间（字典 <code>M.__dict__）</code>：覆盖相同的名字（旧的有，新的也有），保留缺失的名字（旧的有，新的没有），添加新增的名字（旧的没有，新的有）</li>
+<li>对于由 import M 语句导入的模块 M：调用 reload(M) 后，M.x 为 新模块 的属性 x（因为更新M后，会影响M.x的求值结果）</li>
+<li>对于由 from M import x 语句导入的属性 x：调用 reload(M) 后，x 仍然是 旧模块 的属性 x（因为更新M后，不会影响x的求值结果）</li>
+<li>如果在调用 reload(M) 后，重新执行 import M（或者from M import x）语句，那么 M.x（或者x）为 新模块 的属性 x</li>
+</ul>
+<p><strong>0x6.8hook的应用</strong><br>所谓import hook就是指直接自定义finder和loader,并将finder放入导入过程,以实现一些特殊的运行时行为的技巧.</p>
+<p>利用这个可以做到很多非常神奇的事情,比如</p>
+<ul>
+<li>import某个特定模块时触发某个回调函数来通知我们</li>
+<li>import一个远程服务器上的模块</li>
+<li>直接import其他语言的模块来使用</li>
+</ul>
+<p>详情可看此篇文章:<br><a href="http://blog.hszofficial.site/TutorialForPython/%E8%AF%AD%E6%B3%95%E7%AF%87/%E5%85%83%E7%BC%96%E7%A8%8B/import_hook.html" target="_blank" rel="noopener">http://blog.hszofficial.site/TutorialForPython/%E8%AF%AD%E6%B3%95%E7%AF%87/%E5%85%83%E7%BC%96%E7%A8%8B/import_hook.html</a>   </p>
+<h1 id="0x7动态编译"><a href="#0x7动态编译" class="headerlink" title="0x7动态编译"></a>0x7动态编译</h1><p>动态编译指的是在运行时接收字符串,动态的将其编译为python可执行的代码的功能.</p>
+<p>python提供了两个函数用于实现动态编译:</p>
+<p>exec和eval函数</p>
+<ul>
+<li><p>eval(exp[, globals[, locals]])</p>
+<ul>
+<li>globals是字典形式,表示全局命名空间,如果传入globals的字典中缺少<code>__builtins__</code>的时候,当前的全局命名空间将作为globals参数输入并在表达式计算之前被解析.</li>
+<li>locals则为任何映射对象,表示局部命名空间,与globals两者默认相同.</li>
+</ul>
+</li>
+</ul>
+<p>如果两者都省略则表示在eval的调用环境中执行</p>
+<ul>
+<li>exec()<br>与eval()类似的是exec()方法,但exec是翻译并执行.exec常与文件读取操作结合使用,直接传递python的代码文件运行  </li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="built_in">eval</span>(<span class="string">"lambda *x: sum(x)"</span>)</span><br><span class="line"><span class="built_in">print</span>(a(1,2,3,4,5))</span><br><span class="line"><span class="built_in">exec</span>(<span class="string">"aa = lambda x: x"</span>)</span><br><span class="line"><span class="built_in">print</span>(10)</span><br></pre></td></tr></table></figure>
+
+<p>eval和exec有两个弊端:</p>
+<ul>
+<li><p>降低运算效率<br>如上面看到的,运行时间上差距不小</p>
+</li>
+<li><p>安全性<br>这主要是因为可以调用一些危险的方法而没有设限.也就是所谓的代码注入攻击.</p>
+</li>
+</ul>
+<p>当然了,我们也可以通过限制globals和locals来实现对可用项的限制.</p>
+<p>如果只是为了传入参数,那么可以使用ast库的literal_eval函数,它是安全的   </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import ast</span><br><span class="line"><span class="built_in">print</span>(ast.literal_eval(<span class="string">"[1,2,3]"</span>))</span><br></pre></td></tr></table></figure>
+
+<p>在Python中做元编程时,最好不用exec 和eval 函数.如果接收的字符串(或片段)来自不可信的源,那么这两个函数会带来严重的安全风险.Python提供了充足的内省工具,大多数时候都不需要使用exec和eval函数.然而,Python核心开发者实现namedtuple函数时选择了使用exec函数,这样做是为了让生成的类代码能通过._source获取.     </p>
+<h1 id="0x8动态属性"><a href="#0x8动态属性" class="headerlink" title="0x8动态属性"></a>0x8动态属性</h1><p><strong>0x8.1静态语言与动态语言</strong><br><strong>0x8.1.1 静态语言特点：</strong></p>
+<ul>
+<li>a. 在定义变量时需要指定变量的类型，根据指定的类型来确定变量所占的内存空间</li>
+<li>b. 需要经过编译才能运行</li>
+<li>c. 在代码编译后，运行过程不能对代码进行操作</li>
+<li>d. 常见的静态语言：C、C++、Java等</li>
+</ul>
+<p><strong>0x8.1.2 动态语言的特点：</strong>  </p>
+<ul>
+<li>a. 不需要经过编译，而是由解释器程序来解释执行代码</li>
+<li>b. 在代码运行过程中，可以动态地对代码进行操作</li>
+<li>c. 常见的动态语言：Python、PHP、Ruby、JavaScript等</li>
+</ul>
+<p><strong>0x8.1.3 优缺点比较：</strong>   </p>
+<ul>
+<li>a. 静态语言会声明变量类型，可以帮助计算机在执行代码前来发现更多潜在的错误，但这样会需要使用者进行更多的思考和编码。反之动态语言则不需要，它很灵活</li>
+<li>b. 静态语言在编译后，执行速度一般是大于动态语言的</li>
+<li>c. 静态语言结构比较规范，能很方便调试，但需要与大量类型相关的代码。而动态语言不需要与大量类型相关的代码，但如果编写不规范，不容易调试</li>
+</ul>
+<p><strong>8.2 影响属性处理方式的特殊属性</strong>        </p>
+<ul>
+<li><p><code>__class__</code><br>  对象所属类的引用(即<code>obj.__class__</code>与type(obj) 的作用相同).Python 的某些特殊方法,例如<code>__getattr__</code>,只在对象的类中寻找,而不在实例中寻找.</p>
+</li>
+<li><p><code>__dict__</code><br>一个映射,存储对象或类的可写属性.有<code>__dict__</code> 属性的对象,任何时候都能随意设置新属性.如果类有<code>__slots__</code>属性,它的实例可能没有<code>__dict__</code>属性.参见下面对<code>__slots__</code> 属性的说明.</p>
+</li>
+<li><p><code>__slots__</code><br>类可以定义这个这属性,限制实例能有哪些属性<code>.__slots__</code>属性的值是一个字符串组成的元组,指明允许有的属性.如果<code>__slots__</code>中没有’<code>__dict__</code>‘,那么该类的实例没有</p>
+</li>
+<li><p><code>__dict__</code> 属性,实例只允许有指定名称的属性.  </p>
+</li>
+</ul>
+<p><strong>8.3 处理属性的内置函数</strong><br>下述5个内置函数对对象的属性做读、写和内省操作.</p>
+<ul>
+<li><p>dir([object])<br>列出对象的大多数属性.dir 函数的目的是交互式使用,因此没有提供完整的属性列表,只列出一组”重要的”属性名.dir 函数能审查有或没有<code>__dict__</code>属性的对象.dir函数不会列出<code>__dict__</code>属性本身,但会列出其中的键.dir 函数也不会列出类的几个特殊属性,例如<code>__mro__、__bases__</code>和<code>__name__.</code>如果没有指定可选的object参数,dir 函数会列出当前作用域中的名称.</p>
+</li>
+<li><p>getattr(object,name[, default])<br>从object 对象中获取name字符串对应的属性.获取的属性可能来自对象所属的类或超类。如果没有指定的属性,getattr 函数抛出AttributeError异常,或者返回default参数的值(如果设定了这个参数的话).</p>
+</li>
+<li><p>hasattr(object, name)<br>如果object对象中存在指定的属性,或者能以某种方式(例如继承)通过object对象获取指定的属性,返回True</p>
+</li>
+<li><p>setattr(object, name, value)<br>把object对象指定属性的值设为value,前提是object对象能接受那个值.这个函数可能会创建一个新属性,或者覆盖现有的属性.</p>
+</li>
+<li><p>vars([object])<br>返回object对象的<strong>dict</strong>属性;如果实例所属的类定义了<strong>slots</strong> 属性,实例没有<strong>dict</strong>属性,那么vars函数不能处理那个实例(相反,dir 函数能处理这样的实例).如果没有指定参数,那么vars()函数的作用与locals()函数一样:返回表示本地作用域的字典.</p>
+</li>
+</ul>
+<p><strong>8.4处理属性的特殊方法</strong><br>在用户自己定义的类中,下述特殊方法用于获取,设置,删除和列出属性.</p>
+<p>使用点号或内置的getattr、hasattr 和setattr函数存取属性都会触发下述列表中相应的特殊方法.但是直接通过实例的<code>__dict__</code>属性读写属性不会触发这些特殊方法——如果需要,通常会使用这种方式跳过特殊方法.</p>
+<p>对用户自己定义的类来说,如果隐式调用特殊方法,仅当特殊方法在对象所属的类型上定义,而不是在对象的实例字典中定义时,才能确保调用成功.</p>
+<p>要假定特殊方法从类上获取,即便操作目标是实例也是如此.因此,特殊方法不会被同名实例属性遮盖.</p>
+<ul>
+<li><p><code>__delattr__(self, name)</code><br>只要使用del语句删除属性,就会调用这个方法.例如,del obj.attr语句触发<code>Class.__delattr__(obj, &#39;attr&#39;)</code>方法.</p>
+</li>
+<li><p><code>__dir__(self)</code><br>把对象传给dir函数时调用,列出属性.例如，dir(obj) 触发<code>Class.__dir__(obj)</code>方法.</p>
+</li>
+<li><p><code>__getattr__(self, name)</code><br>仅当获取指定的属性失败，搜索过obj、Class和超类之后调用.表达式obj.no_such_attr、getattr(obj, ‘no_such_attr’) 和hasattr(obj, ‘no_such_attr’)可能会触发<code>Class.__getattr__(obj, &#39;no_such_attr&#39;)</code>方法,但仅当在obj、Class 和超类中找不到指定的属性时才会触发.</p>
+</li>
+<li><p><code>__getattribute__(self, name)</code><br>尝试获取指定的属性时总会调用这个方法,不过寻找的属性是特殊属性或特殊方法时除外.点号与getattr 和hasattr 内置函数会触发这个方法.调用<code>__getattribute__</code>方法且抛出AttributeError 异常时,才会调用<code>__getattr__</code> 方法.为了在获取obj实例的属性时不导致无限递归,<code>__getattribute__</code>方法的实现要使用<code>super().__getattribute__(obj, name)</code></p>
+</li>
+<li><p><code>__setattr__(self, name, value)</code><br>尝试设置指定的属性时总会调用这个方法.点号和setattr内置函数会触发这个方法.例如<code>obj.attr = 42和setattr(obj,&#39;attr&#39;, 42)</code> 都会触发<code>Class.__setattr__(obj,attr’, 42)</code> 方法</p>
+</li>
+</ul>
+<p>其实特殊方法<code>__getattribute__</code> 和<code>__setattr__</code>不管怎样都会调用,几乎会影响每一次属性存取,因此比<code>__getattr__</code>方法(只处理不存在的属性名)更难正确使用.与定义这些特殊方法相比,使用特性或描述符相对不易出错.</p>
+<p><strong>8.5动态绑定方法</strong><br>python中方法只是可以调用的属性,因此方法也是可以动态绑定的.尤其实例方法的动态*<em>8.5.1动态绑定实例方法 *</em>     </p>
+<p>动态绑定实例方法需要借助types.MethodType  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from types import MethodType</span><br><span class="line">class Student(object):</span><br><span class="line">    age = 10</span><br><span class="line">def set_age(self, age): <span class="comment"># 定义一个函数作为实例方法</span></span><br><span class="line">    self.age = age</span><br><span class="line">s = Student()</span><br><span class="line">s.set_age = MethodType(set_age, s) <span class="comment"># 给实例绑定一个方法</span></span><br><span class="line"><span class="built_in">print</span>(s.age)</span><br><span class="line">s.set_age(12)</span><br><span class="line"><span class="built_in">print</span>(s.age)</span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">10</span><br><span class="line">12</span><br></pre></td></tr></table></figure>
+<p><strong>8.5.2动态绑定类方法</strong>  </p>
+<p>动态绑定类方法与前面类似,只是MethodType的第一个参数改成了类名  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from types import MethodType</span><br><span class="line">class Student(object):</span><br><span class="line">    age = 10</span><br><span class="line">def set_score(clz, score):<span class="comment">#定义一个函数作为类的方法</span></span><br><span class="line">     clz.score = score</span><br><span class="line"></span><br><span class="line">Student.set_score = MethodType(set_score, Student)</span><br><span class="line">Student.set_score(30)</span><br><span class="line"><span class="built_in">print</span>(Student.score)</span><br><span class="line">s=Student()</span><br><span class="line"><span class="built_in">print</span>(s.score)</span><br></pre></td></tr></table></figure>
+<p><strong>8.5.3动态绑定静态方法</strong><br>动态绑定静态方法更加简单了,只要直接在类名后面像添加元素一样添加即可  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">from types import MethodType</span><br><span class="line">class Student(object):</span><br><span class="line">    age = 10</span><br><span class="line">def <span class="built_in">echo</span>(score):<span class="comment">#定义一个函数作为类的方法</span></span><br><span class="line">    <span class="built_in">return</span> score</span><br><span class="line">Student.echo = <span class="built_in">echo</span></span><br><span class="line"><span class="built_in">print</span>(Student.echo(123))</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="0x9猴子补丁"><a href="#0x9猴子补丁" class="headerlink" title="0x9猴子补丁"></a>0x9猴子补丁</h1><p><strong>0x9.1什么是猴子补丁</strong><br>即在运行时对方法 / 类 / 属性 / 功能进行修改，把新的代码作为解决方案代替原有的程序，也就是为其打上补丁。   </p>
+<p><strong>0x9.2猴子补丁主要有以下几个用处</strong>  </p>
+<ol>
+<li>在运行时替换方法、属性等</li>
+<li>在不修改第三方代码的情况下增加原来不支持的功能</li>
+<li>在运行时为内存中的对象增加patch而不是在磁盘的源代码中增加   </li>
+</ol>
+<p><strong>9.3猴子补丁例子</strong>  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class Foo(object):</span><br><span class="line">	def bar(self):</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">'Foo.bar'</span>)</span><br><span class="line">def bar(self):</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">'Modified bar'</span>)</span><br><span class="line">Foo().bar()</span><br><span class="line">Foo.bar = bar</span><br><span class="line">Foo().bar()</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x10热更新"><a href="#0x10热更新" class="headerlink" title="0x10热更新"></a>0x10热更新</h1><p><strong>0x10.1什么是热更新</strong><br>简单来说，热更新就是在进程不重启的情况下，让其加载修改后的程序代码，且能按照预期正确执行。在实际开发中，热更新的最主要用途有，</p>
+<ul>
+<li>开发期，提升开发效率，让代码改动立等可见，避免频繁重启</li>
+<li>运维期，在服务端不断线情况下修复紧急bug</li>
+</ul>
+<p>对于bug修复来说，服务端如果不保持状态，那么热更新的必要性不那么大，但如果服务端持有复杂状态，那么热更新就会是一个比较合适的选择。   </p>
+<p><strong>0x10.2热更新的要点</strong><br>Python代码是以module进行组织的，代码热更新就是module的热更新。<br>Python提供的内置函数reload用于重新加载模块，然而直接使用reload并不能够解决热更新这一问题。热更新的要点在于需要让已经创建的对象能够执行更新以后的代码。 </p>
+<p><strong>0x10.3更新操作拆解</strong><br>具体看此篇文章:<br><a href="https://toutiao.io/posts/edo9eh/preview" target="_blank" rel="noopener">https://toutiao.io/posts/edo9eh/preview</a><br>参考文章:<br>python中的元编程:<a href="http://blog.hszofficial.site/TutorialForPython/%E8%AF%AD%E6%B3%95%E7%AF%87/%E5%85%83%E7%BC%96%E7%A8%8B/" target="_blank" rel="noopener">http://blog.hszofficial.site/TutorialForPython/%E8%AF%AD%E6%B3%95%E7%AF%87/%E5%85%83%E7%BC%96%E7%A8%8B/</a><br>Python装饰器详解:<a href="http://www.imooc.com/article/262384" target="_blank" rel="noopener">http://www.imooc.com/article/262384</a><br>Python装饰器:<a href="https://www.cnblogs.com/xiaobingqianrui/p/8435074.html" target="_blank" rel="noopener">https://www.cnblogs.com/xiaobingqianrui/p/8435074.html</a><br>详解Python的装饰器<a href="http://python.jobbole.com/86717/" target="_blank" rel="noopener">http://python.jobbole.com/86717/</a><br>理解 Python 装饰器看这一篇就够了<a href="https://foofish.net/python-decorator.html" target="_blank" rel="noopener">https://foofish.net/python-decorator.html</a><br>什么是 Python 元类:<a href="https://foofish.net/what-is-metaclass.html" target="_blank" rel="noopener">https://foofish.net/what-is-metaclass.html</a><br>Python 元类 (MetaClass) 小教程:<a href="https://lotabout.me/2018/Understanding-Python-MetaClass/#%E7%B1%BB%E6%98%AF%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E7%9A%84" target="_blank" rel="noopener">https://lotabout.me/2018/Understanding-Python-MetaClass/#%E7%B1%BB%E6%98%AF%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E7%9A%84</a><br>解密 Python 的描述符（descriptor）<a href="http://python.jobbole.com/81899/" target="_blank" rel="noopener">http://python.jobbole.com/81899/</a><br>Python 描述符(Descriptor) 附实例:<a href="https://zhuanlan.zhihu.com/p/42485483" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/42485483</a><br>python理解描述符(descriptor) <a href="http://www.imooc.com/article/270468?block_id=tuijian_wz" target="_blank" rel="noopener">http://www.imooc.com/article/270468?block_id=tuijian_wz</a><br>python中描述符的学习:<a href="https://www.jianshu.com/p/27deebdd521f" target="_blank" rel="noopener">https://www.jianshu.com/p/27deebdd521f</a><br>Python import hook：<a href="http://kuanghy.github.io/2016/10/25/python-import-hook" target="_blank" rel="noopener">http://kuanghy.github.io/2016/10/25/python-import-hook</a><br>Python编程笔记–动态属性: <a href="https://zhuanlan.zhihu.com/p/32797327" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/32797327</a><br>Python 代码热更新实现<a href="https://toutiao.io/posts/edo9eh/preview" target="_blank" rel="noopener">https://toutiao.io/posts/edo9eh/preview</a></p>
+</div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/cf5605e2.html">https://blog.cfyqy.com/article/cf5605e2.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
+let title = arr[arr.length - 1];
+if (title === '') {
+    title = arr[arr.length - 2]
+}
+var flag = false;
+var gitFun = function () {
+    try {
+        var gitmentObj = window.GLOBAL_CONFIG.gitment;
+        var gitment = new Gitment({
+            id: decodeURI(title), // 可选。默认为 location.href
+            owner: gitmentObj.owner,
+            repo: gitmentObj.repo,
+            oauth: {
+                client_id: gitmentObj.client_id,
+                client_secret: gitmentObj.client_secret
+            },
+        });
+        gitment.render('comments-container');
+        flag = true;
+    } catch (e) {
+        flag = false;
+    }
+}
+var setIn = setInterval(() => {
+    if (!flag) {
+        gitFun();
+    } else {
+        clearInterval(setIn);
+    }
+}, 200);</script></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/5e2ba329.html"><i class="fas fa-angle-left">&nbsp;</i><span>python的函数编程</span></a></div><div class="next-post pull-right"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/761e66f3.html"><span>python面向对象编程</span><span>&nbsp;</span><i class="fas fa-angle-right"></i></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2017 ～ 2021 By ye1s</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/daovoice.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script></body></html>

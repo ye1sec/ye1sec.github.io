@@ -1,0 +1,113 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="业务逻辑漏洞"><meta name="keywords" content="业务逻辑漏洞"><meta name="author" content="ye1s,undefined"><meta name="copyright" content="ye1s"><title>业务逻辑漏洞【ye1s】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"LKL6Q0GQJM","apiKey":"03829f64e2f5c11e4a5e2b8e51e24eb9","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
+}</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#订单任意金额修改"><span class="toc-number">1.</span> <span class="toc-text">订单任意金额修改</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#验证码回传"><span class="toc-number">2.</span> <span class="toc-text">验证码回传</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#未进行登陆凭证验证"><span class="toc-number">3.</span> <span class="toc-text">未进行登陆凭证验证</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#接口无限制枚举"><span class="toc-number">4.</span> <span class="toc-text">接口无限制枚举</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cookie设置存在缺陷"><span class="toc-number">5.</span> <span class="toc-text">cookie设置存在缺陷</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#找回密码功能缺陷"><span class="toc-number">6.</span> <span class="toc-text">找回密码功能缺陷</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color5"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color7"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color6"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">173</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">151</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">业务逻辑漏洞</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2019-10-11 | 更新于 2020-04-13</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"><i class="fa fa-inbox article-icon" aria-hidden="true"></i><a class="link-a" href="/categories/web%E5%AE%89%E5%85%A8/">web安全</a></div><div class="button-hover tags"><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E/">业务逻辑漏洞</a></div></div></div><div class="main-content"><p>由于程序逻辑不严谨或逻辑太过复杂，导致一些逻辑分支不能正常处理或处理错误，统称为 业务逻辑漏洞</p>
+<a id="more"></a>
+
+
+
+<p>关注重点</p>
+<p>业务流程</p>
+<p>HTTP/HTTPS 请求分析</p>
+<p>详情可看此篇<br><a href="https://github.com/PyxYuYu/MyBlog/issues/102" target="_blank" rel="noopener">https://github.com/PyxYuYu/MyBlog/issues/102</a></p>
+<h1 id="订单任意金额修改"><a href="#订单任意金额修改" class="headerlink" title="订单任意金额修改"></a>订单任意金额修改</h1><p>相同价格增加订单数量，相同订单数量减少产品价格，订单价格设定为负数。</p>
+<p>预防思路：</p>
+<ul>
+<li>订单需要多重效验<br><img src="http://image.3001.net/images/20160819/14715932566558.png" alt=""></li>
+<li>订单数值较大的时候需要人工审核</li>
+</ul>
+<h1 id="验证码回传"><a href="#验证码回传" class="headerlink" title="验证码回传"></a>验证码回传</h1><p>漏洞一般发生在账号密码找回、账号注册、支付订单等。验证码发送途径一般为手机短信、邮箱邮件</p>
+<p>预防思路：</p>
+<ul>
+<li>response数据内不包含验证码，验证方式主要采取后端验证，但是缺点是服务器的运算压力也会随之增加</li>
+<li>如果要进行前端验证的话也可以，但是需要进行加密</li>
+</ul>
+<h1 id="未进行登陆凭证验证"><a href="#未进行登陆凭证验证" class="headerlink" title="未进行登陆凭证验证"></a>未进行登陆凭证验证</h1><p>有些业务的接口，因为缺少了对用户的登陆凭证的效验或者是验证存在缺陷，导致黑客可以未经授权访问这些敏感信息甚至是越权操作。比如后台页面、订单ID枚举、敏感信息可下载、没验证ID或cookie验证导致越权。</p>
+<p>预防思路：</p>
+<ul>
+<li>对敏感数据存在的接口和页面做cookie，ssid，token或者其它验证</li>
+</ul>
+<h1 id="接口无限制枚举"><a href="#接口无限制枚举" class="headerlink" title="接口无限制枚举"></a>接口无限制枚举</h1><ul>
+<li>某电商登陆接口无验证导致撞库</li>
+<li>某招聘网验证码无限制枚举</li>
+<li>某快递公司优惠券枚举</li>
+<li>某电商会员卡卡号枚举</li>
+</ul>
+<p>预防思路：</p>
+<ul>
+<li><p>在输入接口设置验证，如token，验证码等。如果设定验证码，最好不要单纯的采取一个前端验证，最好选择后端验证。如果设定token，请确保每个token只能采用一次，并且对token设定时间参数。</p>
+</li>
+<li><p>注册界面的接口不要返回太多敏感信息，以防遭到黑客制作枚举字典。</p>
+</li>
+<li><p>验证码不要用短数字，尽量6位以上，最好是以字母加数字进行组合，并且验证码需要设定时间期限。</p>
+</li>
+<li><p>优惠券，VIP卡号请尽量不要存在规律性和简短性，并且优惠券最好是以数字加字母进行组合。</p>
+</li>
+</ul>
+<h1 id="cookie设置存在缺陷"><a href="#cookie设置存在缺陷" class="headerlink" title="cookie设置存在缺陷"></a>cookie设置存在缺陷</h1><ul>
+<li>Cookie的效验值过于简单。有些web对于cookie的生成过于单一或者简单，导致黑客可以对cookie的效验值进行一个枚举.</li>
+<li>cookie存在被盗风险，即用户重置密码后使用老cookie依然可以通过验证</li>
+<li>用户的cookie数据加密应严格使用标准加密算法，并注意密钥管理。不能采取简单的base64等算法</li>
+<li>越权：平行越权：权限类型不变，权限ID改变；垂直越权：权限ID不变，权限类型改变；交叉越权：即改变ID，也改变权限</li>
+</ul>
+<p>预防思路</p>
+<ol>
+<li>cookie中设定多个验证，比如自如APP的cookie中，需要sign和ssid两个参数配对，才能返回数据。</li>
+<li>用户的cookie数据加密应严格使用标准加密算法，并注意密钥管理。</li>
+<li>用户的cookie的生成过程中最好带入用户的密码，一旦密码改变，cookie的值也会改变。</li>
+<li>cookie中设定session参数，以防cookie可以长时间生效。</li>
+<li>根据业务不同还有很多方法</li>
+</ol>
+<h1 id="找回密码功能缺陷"><a href="#找回密码功能缺陷" class="headerlink" title="找回密码功能缺陷"></a>找回密码功能缺陷</h1><ol start="2">
+<li>单纯读取内存值作为用户凭证</li>
+<li>电商系统加车、下单漏洞</li>
+</ol>
+<p>参考文章:<br><a href="https://github.com/PyxYuYu/MyBlog/issues/102" target="_blank" rel="noopener">https://github.com/PyxYuYu/MyBlog/issues/102</a></p>
+</div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/eb6bdd2c.html">https://blog.cfyqy.com/article/eb6bdd2c.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
+let title = arr[arr.length - 1];
+if (title === '') {
+    title = arr[arr.length - 2]
+}
+var flag = false;
+var gitFun = function () {
+    try {
+        var gitmentObj = window.GLOBAL_CONFIG.gitment;
+        var gitment = new Gitment({
+            id: decodeURI(title), // 可选。默认为 location.href
+            owner: gitmentObj.owner,
+            repo: gitmentObj.repo,
+            oauth: {
+                client_id: gitmentObj.client_id,
+                client_secret: gitmentObj.client_secret
+            },
+        });
+        gitment.render('comments-container');
+        flag = true;
+    } catch (e) {
+        flag = false;
+    }
+}
+var setIn = setInterval(() => {
+    if (!flag) {
+        gitFun();
+    } else {
+        clearInterval(setIn);
+    }
+}, 200);</script></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/587e8742.html"><i class="fas fa-angle-left">&nbsp;</i><span>应急响应</span></a></div><div class="next-post pull-right"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/98e86a33.html"><span>java线程池</span><span>&nbsp;</span><i class="fas fa-angle-right"></i></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2017 ～ 2021 By ye1s</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/daovoice.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script></body></html>

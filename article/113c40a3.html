@@ -1,0 +1,95 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="CTFHub学习"><meta name="keywords" content=""><meta name="author" content="ye1s,undefined"><meta name="copyright" content="ye1s"><title>CTFHub学习【ye1s】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"LKL6Q0GQJM","apiKey":"03829f64e2f5c11e4a5e2b8e51e24eb9","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
+}</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#信息泄露"><span class="toc-number">1.</span> <span class="toc-text">信息泄露</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#git"><span class="toc-number">1.1.</span> <span class="toc-text">git</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#log"><span class="toc-number">1.1.1.</span> <span class="toc-text">log</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stash"><span class="toc-number">1.1.2.</span> <span class="toc-text">stash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#index"><span class="toc-number">1.1.3.</span> <span class="toc-text">index</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#svn"><span class="toc-number">1.2.</span> <span class="toc-text">svn</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HG"><span class="toc-number">1.3.</span> <span class="toc-text">HG</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#备份文件"><span class="toc-number">1.4.</span> <span class="toc-text">备份文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#网站备份"><span class="toc-number">1.4.1.</span> <span class="toc-text">网站备份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bak文件"><span class="toc-number">1.4.2.</span> <span class="toc-text">bak文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vim缓存"><span class="toc-number">1.4.3.</span> <span class="toc-text">vim缓存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DS-Store"><span class="toc-number">1.4.4.</span> <span class="toc-text">.DS_Store</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHPINFO"><span class="toc-number">1.5.</span> <span class="toc-text">PHPINFO</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color2"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color4"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color10"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">173</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">151</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">CTFHub学习</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2020-12-18 | 更新于 2021-01-06</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"></div><div class="button-hover tags"></div></div></div><div class="main-content"><p>CTFHub题目学习</p>
+<a id="more"></a>
+<h1 id="信息泄露"><a href="#信息泄露" class="headerlink" title="信息泄露"></a>信息泄露</h1><h2 id="git"><a href="#git" class="headerlink" title="git"></a>git</h2><p>git相关命令 <a href="https://blog.csdn.net/weixin_45254208/article/details/107810572" target="_blank" rel="noopener">https://blog.csdn.net/weixin_45254208/article/details/107810572</a>  </p>
+<h3 id="log"><a href="#log" class="headerlink" title="log"></a>log</h3><p>解法一：<br>git_extract.py直接出结果 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python2 git_extract.py http://challenge-15f179a684f3a620.sandbox.ctfhub.com:10080/.git/</span><br></pre></td></tr></table></figure>
+<p>解法二：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python GitHack.py</span><br><span class="line">	http://challenge-3d5f95fbd136fa99.sandbox.ctfhub.com:10080/.git</span><br></pre></td></tr></table></figure>
+<p>git log查看提交历史<br>版本回滚</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard 349eb2df182641950bf27a24df6dc3c8c52fd9c3</span><br></pre></td></tr></table></figure>
+<h3 id="stash"><a href="#stash" class="headerlink" title="stash"></a>stash</h3><p>解法一：<br>git_extract.py直接出结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python2 git_extract.py http://challenge-ea20b24a0fde9085.sandbox.ctfhub.com:10080/.git/</span><br></pre></td></tr></table></figure>
+<p>解法二：<br>GitHack.py 得文件<br>执行 git stash list 发现 stash<br>执行 git stash pop 发现从 git 栈中弹出来一个包含flag的文件  </p>
+<p>版本回滚</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard 349eb2df182641950bf27a24df6dc3c8c52fd9c3</span><br></pre></td></tr></table></figure>
+<h3 id="index"><a href="#index" class="headerlink" title="index"></a>index</h3><h2 id="svn"><a href="#svn" class="headerlink" title="svn"></a>svn</h2><p>Subversion，简称SVN，是一个开放源代码的版本控制系统，相对于的RCS、CVS，采用了分支管理系统，它的设计目标就是取代CVS。互联网上越来越多的控制服务从CVS转移到Subversion。</p>
+<p>安装perl组件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install perl libio-socket-ssl-perl libdbd-sqlite3-perl libclass-dbi-perl libio-all-lwp-perl</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+<p>然后需要安装svn服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install subversion</span><br></pre></td></tr></table></figure>
+<p>gitclone: </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/kost/dvcs-ripper</span><br></pre></td></tr></table></figure>
+<p>下载解压后进入dvcs-ripper工具目录，然后给权限：chmod 755 *<br>进入目录<br>用 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./rip-svn.pl -v -u http://challenge-fb13f9afd9ee3b28.sandbox.ctfhub.com:10080/.svn/</span><br></pre></td></tr></table></figure>
+<p>得到的还原目录数据在.svn目录下，需要ls -al查看 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">svn1.6及以前版本会在项目的每个文件夹下都生成一个.svn文件夹，里面包含了所有文件的备份，文件名为 .svn/text-base/文件名.svn-base</span><br><span class="line">svn1.7及以后版本则只在项目根目录生成一个.svn文件夹，里面的pristine文件夹里包含了整个项目的所有文件备份</span><br></pre></td></tr></table></figure>
+
+<p>这是缺少perl模块的报错<br>我这里提示我缺少的是 SQLite 所以下 SQLite 具体下载什么看提示</p>
+<p>执行需要root权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">perl -MCPAN -e shell</span><br><span class="line">install DBD::SQLite</span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+<h2 id="HG"><a href="#HG" class="headerlink" title="HG"></a>HG</h2><p>脚本：dvcs-ripper-master</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ./rip-hg.pl -v -u http://challenge-6b91e8ced3bbc632.sandbox.ctfhub.com:10080/.hg/</span><br></pre></td></tr></table></figure>
+<p>进入.hg目录，并寻找flag </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ye1s@kali:~/Desktop/tool/dvcs-ripper/.hg$ sudo grep -r <span class="string">"flag"</span> ./</span><br><span class="line">Binary file ./undo.dirstate matches</span><br><span class="line">./last-message.txt:add flag</span><br><span class="line">Binary file ./store/undo matches</span><br><span class="line">./store/fncache:data/flag_2646614128.txt.i</span><br><span class="line">Binary file ./store/00manifest.i matches</span><br></pre></td></tr></table></figure>
+<p>查看.hg/store/fncache可知 flag 的文件名为flag_88274161.txt，直接访问即可得 flag</p>
+<h2 id="备份文件"><a href="#备份文件" class="headerlink" title="备份文件"></a>备份文件</h2><h3 id="网站备份"><a href="#网站备份" class="headerlink" title="网站备份"></a>网站备份</h3><p>拿disearch扫一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python dirsearch.py -u http://challenge-d7b90efa6684f0b0.sandbox.ctfhub.com:10080/ -e *</span><br></pre></td></tr></table></figure>
+<p>url访问flag_235451560.txt,得到flag</p>
+<h3 id="bak文件"><a href="#bak文件" class="headerlink" title="bak文件"></a>bak文件</h3><p>题目提示Flag in index.php source code</p>
+<p>访问index.php.bak下载得到源码，flag在源码里</p>
+<h3 id="vim缓存"><a href="#vim缓存" class="headerlink" title="vim缓存"></a>vim缓存</h3><p>​ 程序员使用vim编辑器编写一个index.php文件时，会有一个.index.php.swp文件，如果文件正常退出，则该文件被删除，如果异常退出，该文件则会保存下来<br>在Linux里通过命令 vim -r xxx.swp 来让临时文件恢复正常 </p>
+<p>访问.index.php.swp,下载文件，记事本打开，Ctrl+F搜索ctfhub得到flag</p>
+<h3 id="DS-Store"><a href="#DS-Store" class="headerlink" title=".DS_Store"></a>.DS_Store</h3><p>.DS_Store是Mac下Finder用来保存如何展示 文件/文件夹 的数据文件，每个文件夹下对应一个。如果开发/设计人员在发布代码时未删除文件夹中隐藏的.DS_store，则有可能会造成文件泄露</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python2 ds_store_exp.py http://challenge-ade6b89566c8695c.sandbox.ctfhub.com:10080/.DS_Store</span><br></pre></td></tr></table></figure>
+<h2 id="PHPINFO"><a href="#PHPINFO" class="headerlink" title="PHPINFO"></a>PHPINFO</h2><p>phpinfo.php<br>搜索ctfhub{</p>
+</div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/113c40a3.html">https://blog.cfyqy.com/article/113c40a3.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
+let title = arr[arr.length - 1];
+if (title === '') {
+    title = arr[arr.length - 2]
+}
+var flag = false;
+var gitFun = function () {
+    try {
+        var gitmentObj = window.GLOBAL_CONFIG.gitment;
+        var gitment = new Gitment({
+            id: decodeURI(title), // 可选。默认为 location.href
+            owner: gitmentObj.owner,
+            repo: gitmentObj.repo,
+            oauth: {
+                client_id: gitmentObj.client_id,
+                client_secret: gitmentObj.client_secret
+            },
+        });
+        gitment.render('comments-container');
+        flag = true;
+    } catch (e) {
+        flag = false;
+    }
+}
+var setIn = setInterval(() => {
+    if (!flag) {
+        gitFun();
+    } else {
+        clearInterval(setIn);
+    }
+}, 200);</script></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/6124293c.html"><i class="fas fa-angle-left">&nbsp;</i><span>Bypasss Disable_function </span></a></div><div class="next-post pull-right"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/b96f5dfe.html"><span>thinkphp学习</span><span>&nbsp;</span><i class="fas fa-angle-right"></i></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2017 ～ 2021 By ye1s</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/daovoice.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script></body></html>

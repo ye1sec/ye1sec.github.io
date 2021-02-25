@@ -1,0 +1,128 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="centos7搭建ctfd平台"><meta name="keywords" content="其他"><meta name="author" content="ye1s,undefined"><meta name="copyright" content="ye1s"><title>centos7搭建ctfd平台【ye1s】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"LKL6Q0GQJM","apiKey":"03829f64e2f5c11e4a5e2b8e51e24eb9","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
+}</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x1mysql安装"><span class="toc-number">1.</span> <span class="toc-text">0x1mysql安装</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x2安装apache"><span class="toc-number">2.</span> <span class="toc-text">0x2安装apache</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x3-ctfd搭建"><span class="toc-number">3.</span> <span class="toc-text">0x3 ctfd搭建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x4安装nginx"><span class="toc-number">4.</span> <span class="toc-text">0x4安装nginx</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color3"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color9"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color9"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">173</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">151</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">centos7搭建ctfd平台</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2019-04-30 | 更新于 2019-05-11</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"><i class="fa fa-inbox article-icon" aria-hidden="true"></i><a class="link-a" href="/categories/%E5%85%B6%E4%BB%96/">其他</a></div><div class="button-hover tags"><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/%E5%85%B6%E4%BB%96/">其他</a></div></div></div><div class="main-content"><p>失败的一次搭建</p>
+<a id="more"></a>
+<p>搭建环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CentOS Linux release 7.6.1810 (Core) </span><br><span class="line">Apache/2.4.6 (CentOS)</span><br><span class="line">mysql 5.7.2.6</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x1mysql安装"><a href="#0x1mysql安装" class="headerlink" title="0x1mysql安装"></a>0x1mysql安装</h1><p>0x1.1下载并安装MySQL官方的 Yum Repository </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -i -c http://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<p>0x1.2yum安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install mysql57-community-release-el7-10.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<p>0x1.3安装MySQL服务器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install mysql-community-server</span><br></pre></td></tr></table></figure>
+
+<p>0x1.4启动MySQL</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start  mysqld.service</span><br></pre></td></tr></table></figure>
+
+<p>0x1.5查看MySQL运行状态</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status mysqld.service</span><br></pre></td></tr></table></figure>
+<p>0x1.6查看mysql的默认密码<br>为了加强安全性，MySQL5.7为root用户随机生成了一个密码，如果安装的是RPM包，则默认是在/var/log/mysqld.log中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep <span class="string">'temporary password'</span> /var/<span class="built_in">log</span>/mysqld.log</span><br></pre></td></tr></table></figure>
+<p>0x1.7修改密码<br>查看密码设置要求</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW VARIABLES LIKE <span class="string">'validate_password%'</span>;</span><br></pre></td></tr></table></figure>
+<p>仅仅为了测试，密码不用太复杂，修改密码前,先把密码设置要求，给取消。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> global validate_password_policy=0;</span><br></pre></td></tr></table></figure>
+<p>修改密码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SET PASSWORD = PASSWORD(<span class="string">'your new password'</span>);</span><br><span class="line">ALTER USER <span class="string">'root'</span>@<span class="string">'localhost'</span> PASSWORD EXPIRE NEVER;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+<p>0x1.8修改mysql编码<br>在/etc/my.cnf中mysqld添加<br>修改配置文件的内容，在[mysqld]结束位置添加</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">character_set_server = utf8</span><br></pre></td></tr></table></figure>
+<p>重启mysql</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart mysqld.service</span><br></pre></td></tr></table></figure>
+<p>进入mysql,查看修改的编码结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show variables like <span class="string">'character_set_%'</span>;</span><br></pre></td></tr></table></figure>
+<p>允许root远程登录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grant all privileges on *.* to <span class="string">'root'</span>@<span class="string">'%'</span> identified by <span class="string">'123456'</span> with grant option;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x2安装apache"><a href="#0x2安装apache" class="headerlink" title="0x2安装apache"></a>0x2安装apache</h1><p>0x2.1安装Apache<br>Apache在默认的CentOS仓库中可用，安装非常简单。 在CentOS和RHEL上，Apache软件包和服务称为httpd。 要安装软件包，请运行以下命令 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install httpd</span><br></pre></td></tr></table></figure>
+
+<p>0x2.2启动服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl <span class="built_in">enable</span> httpd</span><br><span class="line">sudo systemctl start httpd</span><br></pre></td></tr></table></figure>
+
+<p>0x2.3检查Apache服务的状态和版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl status httpd </span><br><span class="line">httpd -v</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="0x3-ctfd搭建"><a href="#0x3-ctfd搭建" class="headerlink" title="0x3 ctfd搭建"></a>0x3 ctfd搭建</h1><p>0x3.1下载ctfd</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/isislab/CTFd.git</span><br></pre></td></tr></table></figure>
+<p>0x3.2修改并运行 prepare.sh<br>将apt-get修改为yum </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo yum -y update</span><br><span class="line">sudo yum install build-essential python-dev python-pip libffi-dev -y</span><br><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+<p>运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./prepare.sh</span><br></pre></td></tr></table></figure>
+
+<p>0x3.3修改数据库依赖<br>在mysql中创建ctfd数据库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create database ctfd;</span><br></pre></td></tr></table></figure>
+<p>在CTFd/config.py中，默认依赖sqlite,修改成mysql</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#DATABASE_URL = os.getenv('DATABASE_URL') or 'sqlite:///&#123;&#125;/ctfd.db'.format(os.path.dirname(os.path.abspath(__file__)))</span></span><br><span class="line">DATABASE_URL = <span class="string">'mysql+pymysql://数据库用户:密码@localhost:3306/ctfd'</span></span><br></pre></td></tr></table></figure>
+
+<p>0x3.4安装配置mod_wsgi<br>首先安装httpd-devel </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y httpd-devel</span><br></pre></td></tr></table></figure>
+<p>安装mod__wsgi</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install mod_wsgi</span><br></pre></td></tr></table></figure>
+<p>0x3.5修改wsgi.py</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from CTFd import create_app</span><br><span class="line">import sys</span><br><span class="line">sys.path.insert(0, <span class="string">'/var/www/html/CTFd/'</span>)</span><br><span class="line">application = create_app()</span><br></pre></td></tr></table></figure>
+<p>0x3.6创建www用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R www:www CTFd/</span><br></pre></td></tr></table></figure>
+<p>0x3.7 创建新站点文件<br>在/etc/httpd/conf.d/中创建ctfd.conf,内容如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;VirtualHost *:80&gt;</span><br><span class="line">  </span><br><span class="line">    WSGIDaemonProcess CTFd user=www group=www threads=5</span><br><span class="line">    WSGIScriptAlias / /var/www/html/CTFd/wsgi.py</span><br><span class="line"> </span><br><span class="line">    &lt;Directory /var/www/html/CTFd&gt;</span><br><span class="line">        WSGIProcessGroup CTFd</span><br><span class="line">        WSGIApplicationGroup %&#123;GLOBAL&#125;</span><br><span class="line">        Order deny,allow</span><br><span class="line">        AllowOverride All</span><br><span class="line">        <span class="comment">#Require all granted</span></span><br><span class="line">        Allow from all</span><br><span class="line">    &lt;/Directory&gt;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+<p>还是安装失败……<br>附上截图，以后再探究<br><img src="../../images/other/ctfd/2.png" alt=""></p>
+<h1 id="0x4安装nginx"><a href="#0x4安装nginx" class="headerlink" title="0x4安装nginx"></a>0x4安装nginx</h1><p>0x4.1、添加源<br>默认情况Centos7中无Nginx的源，最近发现Nginx官网提供了Centos的源地址。因此可以如下执行命令添加源：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<p>0x4.2、安装Nginx<br>通过yum search nginx看看是否已经添加源成功。如果成功则执行下列命令安装Nginx。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y nginx</span><br></pre></td></tr></table></figure>
+<p>0x4.3、启动Nginx并设置开机自动运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start nginx.service</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> nginx.service</span><br></pre></td></tr></table></figure>
+<p>遇到问题有点多。以后再慢慢整<br>参考文章:<br>mysql安装 <a href="https://www.cnblogs.com/luohanguo/p/9045391.html" target="_blank" rel="noopener">https://www.cnblogs.com/luohanguo/p/9045391.html</a><br>apache安装 <a href="https://www.linuxidc.com/Linux/2018-05/152261.htm" target="_blank" rel="noopener">https://www.linuxidc.com/Linux/2018-05/152261.htm</a><br>ctfd平台搭建 <a href="http://www.ifuryst.com/archives/CTFd.html" target="_blank" rel="noopener">http://www.ifuryst.com/archives/CTFd.html</a><br>Centos7使用Apache+mod_wsgi部署flask网站<br><a href="https://blog.csdn.net/qq_36962569/article/details/80885396" target="_blank" rel="noopener">https://blog.csdn.net/qq_36962569/article/details/80885396</a><br>centos7安装Nginx<br><a href="https://www.cnblogs.com/kaid/p/7640723.html" target="_blank" rel="noopener">https://www.cnblogs.com/kaid/p/7640723.html</a></p>
+</div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/9585d64f.html">https://blog.cfyqy.com/article/9585d64f.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
+let title = arr[arr.length - 1];
+if (title === '') {
+    title = arr[arr.length - 2]
+}
+var flag = false;
+var gitFun = function () {
+    try {
+        var gitmentObj = window.GLOBAL_CONFIG.gitment;
+        var gitment = new Gitment({
+            id: decodeURI(title), // 可选。默认为 location.href
+            owner: gitmentObj.owner,
+            repo: gitmentObj.repo,
+            oauth: {
+                client_id: gitmentObj.client_id,
+                client_secret: gitmentObj.client_secret
+            },
+        });
+        gitment.render('comments-container');
+        flag = true;
+    } catch (e) {
+        flag = false;
+    }
+}
+var setIn = setInterval(() => {
+    if (!flag) {
+        gitFun();
+    } else {
+        clearInterval(setIn);
+    }
+}, 200);</script></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/8049be4c.html"><i class="fas fa-angle-left">&nbsp;</i><span>springboot学习</span></a></div><div class="next-post pull-right"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/4d599224.html"><span>邮件发送的几种方式</span><span>&nbsp;</span><i class="fas fa-angle-right"></i></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2017 ～ 2021 By ye1s</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/daovoice.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script></body></html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="elasticsearch安装教程"><meta name="keywords" content="数据检索,elasticsearch"><meta name="author" content="ye1s,undefined"><meta name="copyright" content="ye1s"><title>elasticsearch安装教程【ye1s】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"LKL6Q0GQJM","apiKey":"03829f64e2f5c11e4a5e2b8e51e24eb9","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
+}</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x1安装elasticsearch"><span class="toc-number">1.</span> <span class="toc-text">0x1安装elasticsearch</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x2安装ik分词器"><span class="toc-number">2.</span> <span class="toc-text">0x2安装ik分词器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x3安装search-guard"><span class="toc-number">3.</span> <span class="toc-text">0x3安装search-guard</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x4安装kibana"><span class="toc-number">4.</span> <span class="toc-text">0x4安装kibana</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x5安装head插件"><span class="toc-number">5.</span> <span class="toc-text">0x5安装head插件</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color8"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color10"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color4"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">173</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">151</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">elasticsearch安装教程</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2019-07-11 | 更新于 2020-04-13</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"><i class="fa fa-inbox article-icon" aria-hidden="true"></i><a class="link-a" href="/categories/%E5%BC%80%E5%8F%91/">开发</a></div><div class="button-hover tags"><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/%E6%95%B0%E6%8D%AE%E6%A3%80%E7%B4%A2/">数据检索</a><span>&nbsp;|&nbsp;</span><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/elasticsearch/">elasticsearch</a></div></div></div><div class="main-content"><p>docker下的安装</p>
+<a id="more"></a>
+<h1 id="0x1安装elasticsearch"><a href="#0x1安装elasticsearch" class="headerlink" title="0x1安装elasticsearch"></a>0x1安装elasticsearch</h1><p><strong>0x1.1拉取es的docker镜像</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull elasticsearch:7.2.0</span><br></pre></td></tr></table></figure>
+<p>镜像要加上具体的版本号，要不会出现如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">error response from daemon: manifest <span class="keyword">for</span> elasticsearch:latest not found</span><br></pre></td></tr></table></figure>
+<p>最新版本可到<a href="https://www.elastic.co/cn/downloads/elasticsearch" target="_blank" rel="noopener">官网查看</a>  </p>
+<p><strong>0x1.2启动es容器</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name  es -p 9100:9100 -p 9200:9200 -p 9300:9300 -e <span class="string">"discovery.type=single-node"</span> elasticsearch:7.2.0</span><br></pre></td></tr></table></figure>
+
+<p>9200作为Http协议，主要用于外部通讯<br>9300作为Tcp协议，jar之间就是通过tcp协议通讯<br>ES集群之间是通过9300进行通讯  </p>
+<p><strong>0x1.3进入容器</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it es /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p><strong>0x1.4进入配置文件夹</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> config</span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi elasticsearch.yml</span><br></pre></td></tr></table></figure>
+<p>加入跨域配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http.cors.enabled: <span class="literal">true</span></span><br><span class="line">http.cors.allow-origin: <span class="string">"*"</span></span><br></pre></td></tr></table></figure>
+<p><strong>0x1.5退出并不停止运行容器</strong>    </p>
+<p>CTRL +p+q 建</p>
+<p><strong>0x1.6重启容器</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker restart es</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x2安装ik分词器"><a href="#0x2安装ik分词器" class="headerlink" title="0x2安装ik分词器"></a>0x2安装ik分词器</h1><p>下载地址<a href="https://github.com/medcl/elasticsearch-analysis-ik" target="_blank" rel="noopener">https://github.com/medcl/elasticsearch-analysis-ik</a><br>ik分词器的版本要与es版本想对应    </p>
+<p><strong>0x2.1方法一</strong>  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/elasticsearch-plugin install  https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.2.0/elasticsearch-analysis-ik-7.2.0.zip</span><br></pre></td></tr></table></figure>
+
+<p><strong>0x2.2方法二</strong><br>下载安装包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget   https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.2.0/elasticsearch-analysis-ik-7.2.0.zip</span><br></pre></td></tr></table></figure>
+<p>在plugins中并建立ik目录，并解压安装包到到ik中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unzip -d ./plugins/ik   elasticsearch-analysis-ik-7.2.0.zip</span><br></pre></td></tr></table></figure>
+
+<p>重启es,使ik分词器生效</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker restart es</span><br></pre></td></tr></table></figure>
+<p><strong>0x2.3保存一下容器为镜像(下面的步骤损坏好恢复)</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit es es:v1</span><br></pre></td></tr></table></figure>
+<p>es为容器名，或容器id. es:v1 要保存的镜像的REPOSITORY和tag</p>
+<p>如果要将镜像传到hub上，按如下操作<br><strong>0x2.4为镜像打标签</strong><br><code>docker tag imageName dockerUserName/xxx[:tag]</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker tag es:v1 ye1s/ye1s:es</span><br></pre></td></tr></table></figure>
+<p><strong>0x2.5登入</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker login</span><br></pre></td></tr></table></figure>
+<p>输入账户密码     </p>
+<p><strong>0x2.6上传</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push dockerUserName/xxx[:tag]</span><br></pre></td></tr></table></figure>
+<h1 id="0x3安装search-guard"><a href="#0x3安装search-guard" class="headerlink" title="0x3安装search-guard"></a>0x3安装search-guard</h1><p>具体的安装和使用和看<a href="https://docs.search-guard.com/latest/" target="_blank" rel="noopener">官网教程</a><br><strong>0x3.1方法一</strong> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/elasticsearch-plugin install -b com.floragunn:search-guard-7:7.2.0-35.0.0</span><br></pre></td></tr></table></figure>
+<p>后面换成对应的版本号。<br>可到<a href="https://search.maven.org/search?q=g:com.floragunn" target="_blank" rel="noopener">官网查看</a>          </p>
+<p><strong>0x3.1方法二</strong><br>下载Search Guard插件的zip文件<br>切换到Elasticsearch安装目录并键入：  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/elasticsearch-plugin install -b file:///path/to/search-guard-7-&lt;version&gt;.zip</span><br></pre></td></tr></table></figure>
+<p><strong>0x3.2脚本安装</strong><br>因为脚本安装的演示证书都一样，存在安全问题。安全安装具体看官网 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> into &lt;Elasticsearch directory&gt;/plugins/search-guard-7/tools</span><br></pre></td></tr></table></figure>
+<p>添加<code>install_demo_configuration.sh</code>执行权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x install_demo_configuration.sh</span><br></pre></td></tr></table></figure>
+<p>cd 成 <code>&lt;Elasticsearch directory&gt;/plugins/search-guard-7/tools</code><br>执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./install_demo_configuration.sh</span><br></pre></td></tr></table></figure>
+<p>输入三次y<br>其他节点也要执行相同操作并重启ES  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ctrl p+q</span><br><span class="line">sudo docker restart es容器</span><br></pre></td></tr></table></figure>
+<p><strong>0x3.3修改默认密码</strong><br>默认账户为admin 密码admin<br>也有其他默认的账户密码  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ./plugins/search-guard-7/tools</span><br><span class="line">chmod +x hash.sh</span><br><span class="line">./hash.sh -p 密码      <span class="comment"># 会输出一串字符串</span></span><br><span class="line"><span class="variable">$2y</span><span class="variable">$12</span><span class="variable">$Vx9Zp3RWraNyfDMmeyswmuYcWO9Z06BAOI</span>/nf6kvl/CHaZzRv3ZYa</span><br></pre></td></tr></table></figure>
+
+<p>将新生成的字符串拷贝至 <code>./plugins/search-guard-6/sgconfig/sg_internal_users.yml</code> 文件中，替换原来的admin密码   </p>
+<p>使配置生效</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/share/elasticsearch/plugins/search-guard-7/tools</span><br><span class="line">chmod +x sgadmin_demo.sh</span><br><span class="line">./sgadmin_demo.sh</span><br></pre></td></tr></table></figure>
+
+<p><strong>0x3.4可能出现问题</strong>      </p>
+<p>如果显示</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WARNING: JAVA_HOME not <span class="built_in">set</span>, will use</span><br><span class="line">./hash.sh: line 25: java: <span class="built_in">command</span> not found</span><br></pre></td></tr></table></figure>
+<p>可安装一下java环境<br>安装jdk<br>此次选择java-1.8.0-openjdk-devel.x86_64 : OpenJDK Development Environment</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install java-1.8.0-openjdk-devel.x86_64</span><br></pre></td></tr></table></figure>
+<p>配置全局变量</p>
+<p>打开配置文件,按insert进入编辑模式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/profile</span><br></pre></td></tr></table></figure>
+<p>复制以下三行到文件中，按esc退出编辑模式，输入:wq保存退出（这里的JAVA_HOME以自己实际的目录为准）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-8.b10.el6_9.x86_64</span><br><span class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$JAVA_HOME</span>/jre/lib/rt.jar:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib/tools.jar</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</span><br></pre></td></tr></table></figure>
+<p>全局变量立即生效</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure>
+<p>查看安装jdk是否成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+
+<p>java -version</p>
+<h1 id="0x4安装kibana"><a href="#0x4安装kibana" class="headerlink" title="0x4安装kibana"></a>0x4安装kibana</h1><p><strong>0x4.1拉取kibana镜像</strong> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull kibana</span><br></pre></td></tr></table></figure>
+<p><strong>0x4.2运行容器</strong> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --link es:elasticsearch -p 5601:5601 --name ka -d kibana:7.2.0</span><br></pre></td></tr></table></figure>
+<p><strong>0x4.3安装插件</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/share/kibana/bin</span><br><span class="line">./kibana-plugin install https://search.maven.org/remotecontent?filepath=com/floragunn/search-guard-kibana-plugin/7.2.0-35.2.0/search-guard-kibana-plugin-7.2.0-35.2.0.zip</span><br></pre></td></tr></table></figure>
+<p>具体插件版本地址地址可到<a href="https://docs.search-guard.com/latest/search-guard-versions" target="_blank" rel="noopener">插件下载</a><br><strong>0x4.4修改配置文件</strong>  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">vi config/kibana.yml</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server.name: kibana</span><br><span class="line">server.host: <span class="string">"0"</span></span><br><span class="line">elasticsearch.hosts: [ <span class="string">"https://elasticsearch:9200"</span> ]</span><br><span class="line"></span><br><span class="line">elasticsearch.username: <span class="string">"admin"</span></span><br><span class="line">elasticsearch.password: <span class="string">"ipsearch12#"</span></span><br><span class="line">elasticsearch.ssl.verificationMode: none</span><br><span class="line">elasticsearch.requestHeadersWhitelist: [ <span class="string">"Authorization"</span>, <span class="string">"sgtenant"</span> ]</span><br><span class="line">xpack.monitoring.enabled: <span class="literal">false</span></span><br><span class="line">xpack.graph.enabled: <span class="literal">false</span></span><br><span class="line">xpack.ml.enabled: <span class="literal">false</span></span><br><span class="line">xpack.watcher.enabled: <span class="literal">false</span></span><br><span class="line">xpack.security.enabled: <span class="literal">false</span></span><br><span class="line">xpack.monitoring.ui.container.elasticsearch.enabled: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+
+<p>重启kibana    </p>
+<h1 id="0x5安装head插件"><a href="#0x5安装head插件" class="headerlink" title="0x5安装head插件"></a>0x5安装head插件</h1><p>参考文章:<br>search-guard的官方文档<a href="https://docs.search-guard.com/latest/" target="_blank" rel="noopener">https://docs.search-guard.com/latest/</a>  </p>
+<p>CentOS 7 安装 JAVA环境(JDK1.8)        <a href="https://juejin.im/entry/5b9b7c71e51d450e4115373d" target="_blank" rel="noopener">https://juejin.im/entry/5b9b7c71e51d450e4115373d</a>      </p>
+<p>search-guard安装教程<a href="https://www.jianshu.com/p/fbc1763ff520" target="_blank" rel="noopener">https://www.jianshu.com/p/fbc1763ff520</a></p>
+</div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/23eb42c6.html">https://blog.cfyqy.com/article/23eb42c6.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
+let title = arr[arr.length - 1];
+if (title === '') {
+    title = arr[arr.length - 2]
+}
+var flag = false;
+var gitFun = function () {
+    try {
+        var gitmentObj = window.GLOBAL_CONFIG.gitment;
+        var gitment = new Gitment({
+            id: decodeURI(title), // 可选。默认为 location.href
+            owner: gitmentObj.owner,
+            repo: gitmentObj.repo,
+            oauth: {
+                client_id: gitmentObj.client_id,
+                client_secret: gitmentObj.client_secret
+            },
+        });
+        gitment.render('comments-container');
+        flag = true;
+    } catch (e) {
+        flag = false;
+    }
+}
+var setIn = setInterval(() => {
+    if (!flag) {
+        gitFun();
+    } else {
+        clearInterval(setIn);
+    }
+}, 200);</script></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/5b174d38.html"><i class="fas fa-angle-left">&nbsp;</i><span>linux磁盘分区</span></a></div><div class="next-post pull-right"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/12345678.html"><span>java排序算法</span><span>&nbsp;</span><i class="fas fa-angle-right"></i></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2017 ～ 2021 By ye1s</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/daovoice.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script></body></html>

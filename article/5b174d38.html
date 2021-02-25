@@ -1,0 +1,136 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="linux磁盘分区"><meta name="keywords" content="linux,磁盘分区"><meta name="author" content="ye1s,undefined"><meta name="copyright" content="ye1s"><title>linux磁盘分区【ye1s】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"LKL6Q0GQJM","apiKey":"03829f64e2f5c11e4a5e2b8e51e24eb9","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
+}</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#fdisk分区"><span class="toc-number">1.</span> <span class="toc-text">fdisk分区</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#parted分区"><span class="toc-number">2.</span> <span class="toc-text">parted分区</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#磁盘格式化"><span class="toc-number">3.</span> <span class="toc-text">磁盘格式化</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#挂载"><span class="toc-number">4.</span> <span class="toc-text">挂载</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#允许普通用户访问"><span class="toc-number">5.</span> <span class="toc-text">允许普通用户访问</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color9"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color6"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color8"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">173</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">151</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">linux磁盘分区</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2019-08-03 | 更新于 2020-04-13</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"><i class="fa fa-inbox article-icon" aria-hidden="true"></i><a class="link-a" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a></div><div class="button-hover tags"><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/linux/">linux</a><span>&nbsp;|&nbsp;</span><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA/">磁盘分区</a></div></div></div><div class="main-content"><p>最近要下载一大堆的资料到服务器上，服务器系统盘的磁盘容量有点不够，还有一个11T的机械硬盘没有使用，但没有分区也没挂载，直接挂载有点浪费，先分区一下。</p>
+<a id="more"></a>
+<p>首先先了解一下分区的一些知识:  </p>
+<ul>
+<li><p>硬盘分区有三种，主磁盘分区、扩展磁盘分区、逻辑分区。       </p>
+</li>
+<li><p>一个硬盘主分区至少有1个，最多4个，扩展分区可以没有，最多1个。且主分区+扩展分区总共不能超过4个。逻辑分区可以有若干</p>
+</li>
+<li><p>但扩展分区是不能直接用的，他是以逻辑分区的方式来使用的，所以说扩展分区可分成若干逻辑分区 </p>
+</li>
+<li><p>在linux中第一块硬盘分区为hda分区(或者是sda分区)，主分区编号为hda1-4，逻辑分区从5开始。  </p>
+</li>
+<li><p>一个是放置该硬盘的信息区，称之为主引导分区(master boot recorder,MBR)，一个是实际文件数据放置的地方.其中，MBR是整个硬盘最重要的区域.一旦MBR物理实体损坏时，则该硬盘就差不多报废了.一般来说，MBR有512个字节，且可以分为两个部分.</p>
+<ul>
+<li>(1)第一部分有446个字节，用于存放引导代码，即bootloader.</li>
+<li>(2)第二部分有64个字节，用于存放磁盘分区表.其中，每个分区的信息需要用16个字节来记录，因此，一个硬盘最多可以有4个分区.这4个分区称之为主分区和扩展分区(extended).</li>
+</ul>
+</li>
+<li><p>Linux 先有目录，再将物理地址(分区)映射到目录中(windows相反).所有路径都是从根目录开始。默认分为：boot分区、swap分区和根分区.(另外：每个系统有自己的格式。linux(ext2,ext3,ext4),windows(ntfs,fat32))    </p>
+<ul>
+<li><p>/boot区，通常情况下根据Linux的版本不同，个人分区习惯会不同，我这里分配了500M给这个分区。</p>
+</li>
+<li><p>swap区，交换区，通常分配给其的大小为物理内存的2倍，但是最好不要超过256M，所以我这里分配了256M给这个分区。</p>
+</li>
+<li><p>/ 区，也就是根目录，这个分区尽量给其分配大的空间，可以将安装Linux系统的这个硬盘上除去分给/boot、swap区以外的空间都分配给这个分</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>具体详情可看<br><a href="https://www.cnblogs.com/xiaoluo501395377/archive/2013/04/03/2997098.html" target="_blank" rel="noopener">Linux学习之CentOS(八)–Linux系统的分区概念
+</a></p>
+<p>尝试了常见的fdisk分区方法</p>
+<h1 id="fdisk分区"><a href="#fdisk分区" class="headerlink" title="fdisk分区"></a>fdisk分区</h1><p>0x1.1首先<code>fdisk -l</code> 查看硬盘及分区信息<br>这里举例其中的一部分   </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Disk /dev/nvme0n1: 953.9 GiB, 1024209543168 bytes, 2000409264 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel <span class="built_in">type</span>: gpt</span><br><span class="line">Disk identifier: A7245786-B2A7-4BEB-9B3E-1CAE85EE0D61</span><br><span class="line"></span><br><span class="line">Device           Start        End    Sectors   Size Type</span><br><span class="line">/dev/nvme0n1p1    2048    1050623    1048576   512M EFI System</span><br><span class="line">/dev/nvme0n1p2 1050624 2000408575 1999357952 953.4G Linux filesystem</span><br></pre></td></tr></table></figure>
+<p>具体的解释可看<br><a href="https://blog.51cto.com/linux008/548711?source=drt" target="_blank" rel="noopener">linux磁盘分区fdisk命令详解</a></p>
+<p>0x1.2 fdisk命令参数介绍</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">m、一些参数解释</span><br><span class="line">p、打印分区表。</span><br><span class="line">n、新建一个新分区。</span><br><span class="line">d、删除一个分区。</span><br><span class="line">q、退出不保存。</span><br><span class="line">w、把分区写进分区表，保存并退出。</span><br></pre></td></tr></table></figure>
+<p>具体的分区操作可看<a href="https://blog.51cto.com/linux008/548711?source=drt" target="_blank" rel="noopener">fdisk命令详解</a><br>当硬盘空间大于2TB时，不能使用fdisk进行分区，因为fdisk最大支持2TB，且ext4不支持16TB以上的磁盘格式化，超过2T的磁盘只会显示2T,这里的磁盘有10.9T,所以我这里使用parted和xfs。</p>
+<h1 id="parted分区"><a href="#parted分区" class="headerlink" title="parted分区"></a>parted分区</h1><p>0x2.1parted命令详解</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">检查 MINOR                           <span class="comment">#对文件系统进行一个简单的检查 </span></span><br><span class="line">cp [FROM-DEVICE] FROM-MINOR TO-MINOR <span class="comment">#将文件系统复制到另一个分区 </span></span><br><span class="line"><span class="built_in">help</span> [COMMAND]                       <span class="comment">#打印通用求助信息，或关于 COMMAND 的信息 </span></span><br><span class="line">mklabel 标签类型                      <span class="comment">#创建新的磁盘标签 (分区表) </span></span><br><span class="line">mkfs MINOR 文件系统类型               <span class="comment">#在 MINOR 创建类型为“文件系统类型”的文件系统 </span></span><br><span class="line">mkpart 分区类型 [文件系统类型] 起始点 终止点    <span class="comment">#创建一个分区 </span></span><br><span class="line">mkpartfs 分区类型 文件系统类型 起始点 终止点    <span class="comment">#创建一个带有文件系统的分区 </span></span><br><span class="line">move MINOR 起始点 终止点              <span class="comment">#移动编号为 MINOR 的分区 </span></span><br><span class="line">name MINOR 名称                      <span class="comment">#将编号为 MINOR 的分区命名为“名称” </span></span><br><span class="line"><span class="built_in">print</span> [MINOR]                        <span class="comment">#打印分区表，或者分区 </span></span><br><span class="line">quit                                 <span class="comment">#退出程序 </span></span><br><span class="line">rescue 起始点 终止点                  <span class="comment">#挽救临近“起始点”、“终止点”的遗失的分区 </span></span><br><span class="line">resize MINOR 起始点 终止点            <span class="comment">#改变位于编号为 MINOR 的分区中文件系统的大小 </span></span><br><span class="line">rm MINOR                             <span class="comment">#删除编号为 MINOR 的分区 </span></span><br><span class="line">select 设备                          <span class="comment">#选择要编辑的设备 </span></span><br><span class="line"><span class="built_in">set</span> MINOR 标志 状态                   <span class="comment">#改变编号为 MINOR 的分区的标</span></span><br></pre></td></tr></table></figure>
+
+<p>0x2.2实例<br>0x2.2.1要分区的磁盘</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parted &#x2F;dev&#x2F;sda</span><br></pre></td></tr></table></figure>
+<p>0x2.2.2创建磁盘标签为gpt    </p>
+<p>如果你的磁盘里有数据的话，这里会出现警告，继续操作将会销毁所有数据<br>如果你的数据都已经备份的话，请根据提示键入y并回车</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(parted) mklabel gpt</span><br></pre></td></tr></table></figure>
+<p>0x2.2.3mkpart开始分区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(parted) mkpart</span><br><span class="line">Partition name?  []? sdb1  <span class="comment">#指定分区名称</span></span><br><span class="line">File system <span class="built_in">type</span>?  [ext2]? ext4  <span class="comment">#指定分区类型</span></span><br><span class="line">Start? 0%  <span class="comment">#指定分区开始位置</span></span><br><span class="line">End? 20%  <span class="comment">#指定分区结束位置</span></span><br></pre></td></tr></table></figure>
+<p>start和end建议用%来分区。    </p>
+<p>以防出现分区不对齐</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Warning: The resulting partition is not properly aligned for best performance.</span><br></pre></td></tr></table></figure>
+<p>其他方法可看：<a href="http://www.zphj1987.com/2016/06/24/parted%E5%88%86%E5%8C%BA%E5%AF%B9%E9%BD%90/" target="_blank" rel="noopener">parted分区对齐</a></p>
+<p>0x2.2.4p查看磁盘信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">(parted) p</span><br><span class="line">Model: ATA ST12000DM0007-2G (scsi)</span><br><span class="line">Disk /dev/sda: 12.0TB</span><br><span class="line">Sector size (logical/physical): 512B/4096B</span><br><span class="line">Partition Table: gpt</span><br><span class="line">Disk Flags:</span><br><span class="line"></span><br><span class="line">Number  Start   End     Size    File system  Name  Flags</span><br><span class="line"> 1      1049kB  2400GB  2400GB  ext4         data</span><br><span class="line"> 2      2400GB  4800GB  2400GB               sda1</span><br><span class="line"> 3      4800GB  7200GB  2400GB               sda2</span><br><span class="line"> 4      7200GB  12.0TB  4800GB               sda3</span><br></pre></td></tr></table></figure>
+<p>0x2.2.5退出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(parted) quit  #quit退出</span><br></pre></td></tr></table></figure>
+<h1 id="磁盘格式化"><a href="#磁盘格式化" class="headerlink" title="磁盘格式化"></a>磁盘格式化</h1><p>格式化命令如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs -t ext4 -c /dev/sdc</span><br></pre></td></tr></table></figure>
+<p>如果硬盘太大就必须采用快速格式化，不然会等到死</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.ext4  -T largefile /dev/sdc</span><br></pre></td></tr></table></figure>
+<h1 id="挂载"><a href="#挂载" class="headerlink" title="挂载"></a>挂载</h1><p>在mnt下创建一个空目录sda1,挂载到此目录上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount /dev/sda1  /mnt/sda1</span><br></pre></td></tr></table></figure>
+<p>这种方法有个不好的都方是机器重启后变又得手工重新挂载.<br>,永久性挂载分区的办法是修改分区文件/etc/fstab</p>
+<p>查看磁盘的UUID和文件格式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo blkid /dev/sda1</span><br></pre></td></tr></table></figure>
+<p>结果如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/dev/sda1: UUID=<span class="string">"afb1bcb7-a96d-430e-9559-968f0958175e"</span> TYPE=<span class="string">"ext4"</span> PARTLABEL=<span class="string">"data"</span> PARTUUID=<span class="string">"b2242d48-e2a7-4185-b92a-4b8a3277b62c"</span></span><br></pre></td></tr></table></figure>
+
+<p>然后,我们按照/etc/fstab文件中的格式添加一行如下内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UUID=afb1bcb7-a96d-430e-9559-968f0958175e  /mnt/sda1 ext4 defaults        0       2</span><br></pre></td></tr></table></figure>
+<p>其中第一列为UUID, 第二列为挂载目录（该目录必须为空目录），第三列为文件系统类型，第四列为参数，第五列0表示不备份，最后一列必须为２或0(除非引导分区为1)  </p>
+<p>最后输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -a</span><br></pre></td></tr></table></figure>
+<p>查看挂载情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount</span><br></pre></td></tr></table></figure>
+<h1 id="允许普通用户访问"><a href="#允许普通用户访问" class="headerlink" title="允许普通用户访问"></a>允许普通用户访问</h1><p>0x4.1任何用户都有权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod -R 777 /mnt/sda1</span><br></pre></td></tr></table></figure>
+<p>0x4.1指定普通用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R ye1s:ye1s /mnt/sda1</span><br><span class="line">sudo umount /mnt/sda1</span><br></pre></td></tr></table></figure>
+<p>将硬盘所在的用户和组改为当前用户<br>重启后,会自动挂载为当前的用户(而非root)</p>
+<p>参考文章:<br><a href="https://www.cnblogs.com/xiaoluo501395377/archive/2013/04/03/2997098.html" target="_blank" rel="noopener">Linux学习之CentOS(八)–Linux系统的分区概念
+</a> </p>
+<p><a href="https://blog.51cto.com/linux008/548711?source=drt" target="_blank" rel="noopener">linux磁盘分区fdisk命令详解</a><br><a href="https://blog.51cto.com/linux008/548711?source=drt" target="_blank" rel="noopener">fdisk命令详解</a></p>
+<p><a href="https://blog.lpxin.com/2019/05/16/Linux%E4%BD%BF%E7%94%A8parted%E6%8C%82%E8%BD%BD%E5%A4%A7%E4%BA%8E2T%E7%A3%81%E7%9B%98/" target="_blank" rel="noopener">Linux使用parted挂载大于2T磁盘</a></p>
+<p><a href="http://www.zphj1987.com/2016/06/24/parted%E5%88%86%E5%8C%BA%E5%AF%B9%E9%BD%90/" target="_blank" rel="noopener">parted分区对齐</a></p>
+</div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/5b174d38.html">https://blog.cfyqy.com/article/5b174d38.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
+let title = arr[arr.length - 1];
+if (title === '') {
+    title = arr[arr.length - 2]
+}
+var flag = false;
+var gitFun = function () {
+    try {
+        var gitmentObj = window.GLOBAL_CONFIG.gitment;
+        var gitment = new Gitment({
+            id: decodeURI(title), // 可选。默认为 location.href
+            owner: gitmentObj.owner,
+            repo: gitmentObj.repo,
+            oauth: {
+                client_id: gitmentObj.client_id,
+                client_secret: gitmentObj.client_secret
+            },
+        });
+        gitment.render('comments-container');
+        flag = true;
+    } catch (e) {
+        flag = false;
+    }
+}
+var setIn = setInterval(() => {
+    if (!flag) {
+        gitFun();
+    } else {
+        clearInterval(setIn);
+    }
+}, 200);</script></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/a3e0a169.html"><i class="fas fa-angle-left">&nbsp;</i><span>广度优先搜索</span></a></div><div class="next-post pull-right"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/article/23eb42c6.html"><span>elasticsearch安装教程</span><span>&nbsp;</span><i class="fas fa-angle-right"></i></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2017 ～ 2021 By ye1s</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/daovoice.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script></body></html>
